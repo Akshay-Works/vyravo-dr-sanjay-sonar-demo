@@ -195,21 +195,25 @@ tailwind.config = {
   </div>
 </div>
 
-<!-- Tour Overlay -->
+<!-- Tour Overlay v2.1 Fixed -->
 <div id="tourOverlay" class="fixed inset-0 z-[70] hidden">
-  <div class="absolute inset-0 bg-ink-900/70 backdrop-blur-[1px]"></div>
+  <div id="tourBg" class="absolute inset-0 bg-ink-900/70 backdrop-blur-[1px] cursor-pointer"></div>
   <div id="tourSpotlight" class="absolute rounded-[20px] border-2 border-white shadow-[0_0_0_9999px_rgba(15,23,42,0.65)] transition-all duration-500 pointer-events-none"></div>
-  <div id="tourCard" class="absolute bg-white rounded-[20px] shadow-float border border-slate-200 p-6 w-[400px] max-w-[92vw] transition-all duration-300">
+  <div id="tourCard" class="absolute bg-white rounded-[20px] shadow-float border border-slate-200 p-6 w-[400px] max-w-[92vw] transition-all duration-300 z-10">
     <div class="flex items-start justify-between gap-3">
       <div class="w-8 h-8 rounded-full bg-ink-900 text-white grid place-items-center text-[12px] font-bold" id="tourStepNum">1</div>
-      <button id="tourSkip" class="text-[11px] text-ink-400 hover:text-ink-900">Skip tour ✕</button>
+      <div class="flex items-center gap-2">
+        <span class="text-[10px] px-2 py-1 rounded-full bg-slate-100 border border-slate-200" id="tourProgress">1 / 5</span>
+        <button id="tourSkip" class="text-[11px] text-ink-400 hover:text-ink-900 px-2 py-1 rounded-full hover:bg-slate-50">Skip tour ✕</button>
+      </div>
     </div>
     <div class="mt-3 font-semibold text-[16px] leading-tight" id="tourTitle">Welcome to Vyravo AI Demo</div>
     <div class="mt-2 text-[13px] leading-6 text-ink-600" id="tourDesc">This 2-min guided tour shows the exact flow you'll demo to Dr. Sanjay.</div>
     <div class="mt-5 flex items-center justify-between">
       <div class="flex gap-1.5" id="tourDots"></div>
-      <div class="flex gap-2"><button id="tourPrev" class="h-9 px-4 rounded-full border border-slate-200 text-[12px] font-medium">Back</button><button id="tourNext" class="h-9 px-5 rounded-full bg-ink-900 text-white text-[12px] font-medium">Next →</button></div>
+      <div class="flex gap-2"><button id="tourPrev" class="h-9 px-4 rounded-full border border-slate-200 text-[12px] font-medium hover:bg-slate-50">Back</button><button id="tourNext" class="h-9 px-5 rounded-full bg-ink-900 text-white text-[12px] font-medium hover:bg-black">Next →</button></div>
     </div>
+    <div class="mt-3 text-[10px] text-ink-400 text-center">Press ESC or click outside to exit • Click Finish to close</div>
   </div>
 </div>
 
@@ -444,6 +448,9 @@ function renderNotifs(){
 
 /* Interactions */
 function navigate(id){
+  // Close tour if open when navigating
+  const tourOverlay=document.getElementById('tourOverlay');
+  if(tourOverlay && !tourOverlay.classList.contains('hidden')){ endTour(); }
   currentNav=id;
   document.querySelectorAll('.nav-btn').forEach(b=>{ const is=b.dataset.nav===id; b.className = `nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13.5px] font-medium ${is?'bg-ink-900 text-white':'text-ink-600 hover:bg-slate-50'}`; });
   document.getElementById('pageTitle').textContent = id==='enquiries'?'Patient Enquiries': id==='followups'?'Follow-ups': id.charAt(0).toUpperCase()+id.slice(1);
@@ -538,25 +545,91 @@ function triggerDemo(){
 /* Staff reply */
 function sendStaffReply(leadId){ const input=document.getElementById('staffReply'); const text=input.value.trim(); if(!text) return; const lead=LEADS.find(l=>l.id===leadId); if(!lead) return; lead.conversation.push({from:'ai', text:`[Staff: ${STAFF[1].name}] ${text}`, at:new Date().toISOString()}); lead.assignedTo='s2'; lead.status='contacted'; FOLLOWUPS.filter(f=>f.leadId===leadId && f.status==='scheduled').forEach(f=>f.status='stopped'); input.value=''; render(); pushNotif('assign', `Reply sent: ${lead.name}`, `Staff replied • ${text.slice(0,40)}`); }
 
-/* Tour */
+/* Tour v2.1 - Fixed stuck at end */
 const TOUR_STEPS = [
   {target:'tourTarget-metrics', title:'Live Metrics • Demo Data', desc:'Every enquiry is tracked. 100% AI response rate <2s, even in Hindi. This is all synthetic demo data, not connected to real systems.', pos:'bottom'},
-  {target:'chatLauncher', title:'Patient Chat • EN/हि + WhatsApp Style', desc:'This is the patient-facing widget. Try Hindi toggle (हि) top-right. Type any enquiry and watch AI collect name, phone, date — no medical diagnosis.', pos:'left'},
+  {target:'chatLauncher', title:'Patient Chat • EN/हि + WhatsApp Style', desc:'This is the patient-facing widget (bottom-right). Try Hindi toggle (हि) top-right. Type any enquiry and watch AI collect name, phone, date — no medical diagnosis.', pos:'left'},
   {target:'tourTarget-flow', title:'Automation Flow', desc:'Patient → AI instant reply → Lead auto-captured → Follow-ups at 0h, 24h, 3d → Human handoff stops automation. v2 adds bell notifications.', pos:'top'},
   {target:'tourTarget-attention', title:'Attention Needed + Notifications', desc:'New + follow-up due leads here. Bell icon (top-right) notifies staff instantly when a new lead arrives. Click it to see live notifications.', pos:'left'},
   {target:'tourTarget-recent', title:'Recent Enquiries + Channels', desc:'Website Chat + WhatsApp (Demo) + Phone. WhatsApp leads show green W badge and WhatsApp bubble styling in Conversations → WhatsApp filter. Click any row to see drawer with calendar 📅.', pos:'top'},
 ];
-function startTour(){ tourStep=0; document.getElementById('tourOverlay').classList.remove('hidden'); renderTour(); }
-function endTour(){ document.getElementById('tourOverlay').classList.add('hidden'); }
-function renderTour(){
-  const step=TOUR_STEPS[tourStep]; if(!step) return endTour();
-  const targetEl=document.getElementById(step.target); const spotlight=document.getElementById('tourSpotlight'); const card=document.getElementById('tourCard');
-  if(targetEl){ const rect=targetEl.getBoundingClientRect(); spotlight.style.left=rect.left-8+'px'; spotlight.style.top=rect.top-8+'px'; spotlight.style.width=rect.width+16+'px'; spotlight.style.height=rect.height+16+'px'; // position card
-    let cardLeft=rect.left, cardTop=rect.bottom+16; if(step.pos==='left'){ cardLeft=rect.left - 420; cardTop=rect.top; } if(cardLeft<16) cardLeft=16; if(cardLeft+400>window.innerWidth) cardLeft=window.innerWidth-416; if(cardTop+200>window.innerHeight) cardTop=rect.top - 220; card.style.left=cardLeft+'px'; card.style.top=cardTop+'px';
-  } else { spotlight.style.left='50%'; spotlight.style.top='50%'; spotlight.style.width='0'; spotlight.style.height='0'; card.style.left='50%'; card.style.top='50%'; card.style.transform='translate(-50%,-50%)'; }
-  document.getElementById('tourStepNum').textContent=tourStep+1; document.getElementById('tourTitle').textContent=step.title; document.getElementById('tourDesc').textContent=step.desc; document.getElementById('tourDots').innerHTML=TOUR_STEPS.map((_,i)=>`<span class="w-1.5 h-1.5 rounded-full ${i===tourStep?'bg-ink-900 w-5':'bg-slate-300'}"></span>`).join(''); document.getElementById('tourPrev').style.visibility=tourStep===0?'hidden':'visible'; document.getElementById('tourNext').textContent=tourStep===TOUR_STEPS.length-1?'Finish ✓':'Next →';
+function startTour(){
+  // Ensure we are on overview and chat is closed so launcher is visible
+  currentNav='overview';
+  document.getElementById('chatPanel').classList.add('hidden');
+  document.getElementById('chatLauncher').classList.remove('hidden');
+  render();
+  tourStep=0;
+  document.getElementById('tourOverlay').classList.remove('hidden');
+  document.body.style.overflow='hidden';
+  setTimeout(()=> renderTour(), 100);
 }
-function nextTour(){ if(tourStep<TOUR_STEPS.length-1){ tourStep++; renderTour(); } else { endTour(); showToast('Tour complete • Now click Run Live Demo'); } }
+function endTour(){
+  const overlay=document.getElementById('tourOverlay');
+  const spotlight=document.getElementById('tourSpotlight');
+  if(overlay) overlay.classList.add('hidden');
+  if(spotlight){ spotlight.style.width='0'; spotlight.style.height='0'; }
+  document.body.style.overflow='';
+  showToast('Tour finished • Click Run Live Demo to see patient flow');
+}
+function renderTour(){
+  const step=TOUR_STEPS[tourStep];
+  if(!step){ return endTour(); }
+  let targetEl=document.getElementById(step.target);
+  // Special handling for chatLauncher - ensure visible
+  if(step.target==='chatLauncher'){
+    document.getElementById('chatPanel').classList.add('hidden');
+    document.getElementById('chatLauncher').classList.remove('hidden');
+    targetEl=document.getElementById(step.target);
+  }
+  const spotlight=document.getElementById('tourSpotlight');
+  const card=document.getElementById('tourCard');
+  if(!targetEl){
+    // If target missing, skip to next or end gracefully
+    console.warn('Tour target not found:', step.target);
+    spotlight.style.left='50%'; spotlight.style.top='50%'; spotlight.style.width='0'; spotlight.style.height='0'; spotlight.style.opacity='0';
+    card.style.left='50%'; card.style.top='50%'; card.style.transform='translate(-50%,-50%)';
+  } else {
+    spotlight.style.opacity='1';
+    targetEl.scrollIntoView({behavior:'smooth', block:'center'});
+    const rect=targetEl.getBoundingClientRect();
+    // Ensure rect is valid
+    if(rect.width===0 || rect.height===0){
+      spotlight.style.left='50%'; spotlight.style.top='50%'; spotlight.style.width='0'; spotlight.style.height='0';
+    } else {
+      spotlight.style.left=(rect.left-8)+'px';
+      spotlight.style.top=(rect.top-8+window.scrollY)+'px';
+      // Adjust for fixed overlay (no scrollY needed as overlay is fixed, rect is viewport relative)
+      spotlight.style.top=(rect.top-8)+'px';
+      spotlight.style.width=(rect.width+16)+'px';
+      spotlight.style.height=(rect.height+16)+'px';
+    }
+    let cardLeft=rect.left, cardTop=rect.bottom+16;
+    if(step.pos==='left'){ cardLeft=rect.left - 420; cardTop=rect.top; }
+    if(cardLeft<16) cardLeft=16;
+    if(cardLeft+400>window.innerWidth) cardLeft=window.innerWidth-416;
+    if(cardTop+220>window.innerHeight) cardTop=rect.top - 240;
+    if(cardTop<16) cardTop=16;
+    card.style.left=cardLeft+'px';
+    card.style.top=cardTop+'px';
+    card.style.transform='none';
+  }
+  document.getElementById('tourStepNum').textContent=tourStep+1;
+  document.getElementById('tourProgress').textContent=(tourStep+1)+' / '+TOUR_STEPS.length;
+  document.getElementById('tourTitle').textContent=step.title;
+  document.getElementById('tourDesc').textContent=step.desc;
+  document.getElementById('tourDots').innerHTML=TOUR_STEPS.map((_,i)=>`<span class="w-1.5 h-1.5 rounded-full transition-all ${i===tourStep?'bg-ink-900 w-5':'bg-slate-300'}"></span>`).join('');
+  document.getElementById('tourPrev').style.visibility=tourStep===0?'hidden':'visible';
+  document.getElementById('tourNext').textContent=tourStep===TOUR_STEPS.length-1?'Finish ✓ Close':'Next →';
+}
+function nextTour(){
+  if(tourStep < TOUR_STEPS.length-1){
+    tourStep++;
+    renderTour();
+  } else {
+    endTour();
+  }
+}
 function prevTour(){ if(tourStep>0){ tourStep--; renderTour(); } }
 
 /* Export */
@@ -584,10 +657,12 @@ document.addEventListener('DOMContentLoaded', ()=>{
   document.getElementById('closeCalendar').addEventListener('click', closeCalendarFunc);
   document.getElementById('langEn').addEventListener('click', ()=>{ chatLang='en'; document.getElementById('langEn').className='px-2.5 py-1 rounded-full text-[11px] font-medium bg-white text-ink-900'; document.getElementById('langHi').className='px-2.5 py-1 rounded-full text-[11px] font-medium text-white/70'; document.getElementById('disclaimerText').textContent=i18n.en.disclaimer; if(chatHistory.length===0) startChat(); else { pushBot(chatLang==='en'? 'Language switched to English.' : 'भाषा अंग्रेजी में बदली गई।'); } });
   document.getElementById('langHi').addEventListener('click', ()=>{ chatLang='hi'; document.getElementById('langHi').className='px-2.5 py-1 rounded-full text-[11px] font-medium bg-white text-ink-900'; document.getElementById('langEn').className='px-2.5 py-1 rounded-full text-[11px] font-medium text-white/70'; document.getElementById('disclaimerText').textContent=i18n.hi.disclaimer; if(chatHistory.length===0) startChat(); else { pushBot('भाषा हिंदी में बदली गई। अब मैं हिंदी में मदद करूंगा।'); } });
-  document.getElementById('tourNext').addEventListener('click', nextTour);
-  document.getElementById('tourPrev').addEventListener('click', prevTour);
-  document.getElementById('tourSkip').addEventListener('click', endTour);
-  document.getElementById('tourOverlay').addEventListener('click', (e)=>{ if(e.target.id==='tourOverlay') endTour(); });
+  document.getElementById('tourNext').addEventListener('click', (e)=>{ e.stopPropagation(); nextTour(); });
+  document.getElementById('tourPrev').addEventListener('click', (e)=>{ e.stopPropagation(); prevTour(); });
+  document.getElementById('tourSkip').addEventListener('click', (e)=>{ e.stopPropagation(); endTour(); });
+  document.getElementById('tourBg').addEventListener('click', endTour);
+  document.getElementById('tourOverlay').addEventListener('click', (e)=>{ if(e.target.id==='tourOverlay' || e.target.id==='tourBg') endTour(); });
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ const overlay=document.getElementById('tourOverlay'); if(overlay && !overlay.classList.contains('hidden')){ endTour(); } } });
   document.addEventListener('click', (e)=>{ const dd=document.getElementById('notifDropdown'); if(!dd.contains(e.target) && e.target.id!=='notifBtn') dd.classList.add('hidden'); });
   setTimeout(()=>{ if(document.getElementById('chatPanel').classList.contains('hidden')) document.getElementById('chatLauncher').classList.add('animate-pulse'); }, 1500);
   // auto prompt tour after 2s for sales
