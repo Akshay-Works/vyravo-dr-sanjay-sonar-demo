@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Vyravo AI — Demo for Dr. Sanjay Sonar Laparoscopy and Scopy Center</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
 <script src="https://cdn.tailwindcss.com"></script>
@@ -22,203 +22,158 @@ tailwind.config = {
 }
 </script>
 <style>
-* { font-variant-ligatures: common-ligatures; }
+* { font-variant-ligatures: common-ligatures; -webkit-tap-highlight-color: transparent; }
 ::-webkit-scrollbar { width:6px; height:6px } ::-webkit-scrollbar-thumb { background:#cbd5e1; border-radius:999px }
-.whatsapp-bg { background-color:#e5ddd5; background-image:url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23d1d7db' fill-opacity='0.3'%3E%3Cpath d='M0 0h100v100H0z'/%3E%3C/g%3E%3C/svg%3E"); }
+.whatsapp-bg { background-color:#e5ddd5; }
+.safe-bottom { padding-bottom: env(safe-area-inset-bottom); }
 @keyframes pulse-ring { 0%{transform:scale(0.8); opacity:1} 100%{transform:scale(2); opacity:0} }
 .pulse-ring::before{content:''; position:absolute; inset:0; border-radius:9999px; border:2px solid #0f172a; animation:pulse-ring 1.8s cubic-bezier(0.455,0.03,0.515,0.955) infinite}
+@media (max-width: 1023px){
+  #tourCard{ left:12px !important; right:12px !important; width:auto !important; bottom:84px !important; top:auto !important; transform:none !important; }
+  #tourSpotlight{ display:none; }
+}
 </style>
 </head>
-<body class="bg-paper text-ink-900 font-sans antialiased selection:bg-teal-100">
+<body class="bg-paper text-ink-900 font-sans antialiased selection:bg-teal-100 overflow-x-hidden">
 <div id="app" class="min-h-screen flex">
-  <!-- Sidebar -->
-  <aside id="sidebar" class="w-[280px] shrink-0 bg-white border-r border-slate-200 flex flex-col fixed lg:sticky top-0 h-[100dvh] z-30 -translate-x-full lg:translate-x-0 transition-transform">
+  <aside id="sidebar" class="w-[300px] lg:w-[280px] shrink-0 bg-white border-r border-slate-200 flex flex-col fixed lg:sticky top-0 h-[100dvh] z-30 -translate-x-full lg:translate-x-0 transition-transform duration-300">
     <div class="px-6 pt-7 pb-6 border-b border-slate-100">
       <div class="flex items-center gap-3">
         <div class="w-9 h-9 rounded-xl bg-ink-900 text-white grid place-items-center font-display text-[18px]">V</div>
-        <div>
-          <div class="font-semibold tracking-tight leading-none">Vyravo AI</div>
-          <div class="text-[11px] tracking-wide text-ink-400 font-medium mt-1 uppercase">Intelligent Automation</div>
-        </div>
+        <div><div class="font-semibold tracking-tight leading-none">Vyravo AI</div><div class="text-[11px] tracking-wide text-ink-400 font-medium mt-1 uppercase">Intelligent Automation</div></div>
+        <button id="closeSidebarMobile" class="lg:hidden ml-auto w-8 h-8 grid place-items-center rounded-full border border-slate-200">✕</button>
       </div>
       <div class="mt-5 p-3 rounded-xl bg-slate-50 border border-slate-200">
         <div class="text-[11px] font-semibold tracking-widest uppercase text-ink-400">Demo Client</div>
         <div class="text-[13px] font-semibold mt-1 leading-snug">Dr. Sanjay Sonar<br>Laparoscopy and Scopy Center</div>
-        <div class="mt-2 inline-flex items-center gap-1.5 text-[11px] font-medium px-2 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">
-          <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> DEMO ENVIRONMENT • v2.0
-        </div>
+        <div class="mt-2 inline-flex items-center gap-1.5 text-[11px] font-medium px-2 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200"><span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span> DEMO • v2.2 Mobile Optimized</div>
       </div>
     </div>
     <nav class="flex-1 px-3 py-4 space-y-1 overflow-auto">
-      <button data-nav="overview" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13.5px] font-medium bg-ink-900 text-white"><span>◧</span> Overview</button>
-      <button data-nav="enquiries" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13.5px] font-medium text-ink-600 hover:bg-slate-50"><span>◩</span> Patient Enquiries <span data-count="enquiries" class="ml-auto text-[11px] bg-slate-100 px-1.5 py-0.5 rounded-full">0</span></button>
-      <button data-nav="conversations" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13.5px] font-medium text-ink-600 hover:bg-slate-50"><span>◫</span> Conversations</button>
-      <button data-nav="followups" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13.5px] font-medium text-ink-600 hover:bg-slate-50"><span>◪</span> Follow-ups <span data-count="followups" class="ml-auto text-[11px] bg-amber-100 text-amber-700 px-1.5 py-0.5 rounded-full">0</span></button>
-      <button data-nav="leads" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13.5px] font-medium text-ink-600 hover:bg-slate-50"><span>◎</span> Leads</button>
-      <button data-nav="analytics" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13.5px] font-medium text-ink-600 hover:bg-slate-50"><span>◰</span> Analytics</button>
-      <button data-nav="settings" class="nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13.5px] font-medium text-ink-600 hover:bg-slate-50"><span>◑</span> Settings</button>
+      <button data-nav="overview" class="nav-btn w-full flex items-center gap-3 px-3 py-3 lg:py-2.5 rounded-xl text-[14px] lg:text-[13.5px] font-medium bg-ink-900 text-white"><span>◧</span> Overview</button>
+      <button data-nav="enquiries" class="nav-btn w-full flex items-center gap-3 px-3 py-3 lg:py-2.5 rounded-xl text-[14px] lg:text-[13.5px] font-medium text-ink-600 hover:bg-slate-50"><span>◩</span> Patient Enquiries <span data-count="enquiries" class="ml-auto text-[11px] bg-slate-100 px-2 py-0.5 rounded-full">0</span></button>
+      <button data-nav="conversations" class="nav-btn w-full flex items-center gap-3 px-3 py-3 lg:py-2.5 rounded-xl text-[14px] lg:text-[13.5px] font-medium text-ink-600 hover:bg-slate-50"><span>◫</span> Conversations</button>
+      <button data-nav="followups" class="nav-btn w-full flex items-center gap-3 px-3 py-3 lg:py-2.5 rounded-xl text-[14px] lg:text-[13.5px] font-medium text-ink-600 hover:bg-slate-50"><span>◪</span> Follow-ups <span data-count="followups" class="ml-auto text-[11px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full">0</span></button>
+      <button data-nav="leads" class="nav-btn w-full flex items-center gap-3 px-3 py-3 lg:py-2.5 rounded-xl text-[14px] lg:text-[13.5px] font-medium text-ink-600 hover:bg-slate-50"><span>◎</span> Leads</button>
+      <button data-nav="analytics" class="nav-btn w-full flex items-center gap-3 px-3 py-3 lg:py-2.5 rounded-xl text-[14px] lg:text-[13.5px] font-medium text-ink-600 hover:bg-slate-50"><span>◰</span> Analytics</button>
+      <button data-nav="settings" class="nav-btn w-full flex items-center gap-3 px-3 py-3 lg:py-2.5 rounded-xl text-[14px] lg:text-[13.5px] font-medium text-ink-600 hover:bg-slate-50"><span>◑</span> Settings</button>
     </nav>
-    <div class="p-4 border-t border-slate-100 space-y-3">
-      <div class="rounded-xl bg-teal-50 border border-teal-100 p-3.5">
-        <div class="text-[12px] font-semibold text-teal-800 leading-snug">Every enquiry gets an immediate response. Every qualified lead is captured.</div>
-        <div class="text-[11px] text-teal-700/80 mt-2">Vyravo AI • Demo v2</div>
-      </div>
-      <button onclick="startTour()" class="w-full h-9 rounded-full bg-white border border-slate-200 text-[12px] font-medium flex items-center justify-center gap-1.5"><span>✦</span> Start Guided Tour (2 min)</button>
-      <div class="flex items-center gap-2.5 pt-1">
-        <img src="https://i.pravatar.cc/100?img=32" class="w-8 h-8 rounded-full">
-        <div class="leading-tight"><div class="text-[13px] font-medium">Anjali Patil</div><div class="text-[11px] text-ink-400">Front Desk • Demo Staff</div></div>
-        <span class="ml-auto w-2 h-2 rounded-full bg-emerald-500"></span>
-      </div>
+    <div class="p-4 border-t border-slate-100 space-y-3 safe-bottom">
+      <div class="rounded-xl bg-teal-50 border border-teal-100 p-3.5"><div class="text-[12px] font-semibold text-teal-800 leading-snug">Every enquiry gets an immediate response. Every lead is captured.</div><div class="text-[11px] text-teal-700/80 mt-2">Mobile + Tablet Optimized • v2.2</div></div>
+      <button onclick="startTour()" class="w-full h-11 lg:h-9 rounded-full bg-white border border-slate-200 text-[13px] font-medium flex items-center justify-center gap-1.5 active:bg-slate-50"><span>✦</span> Start Guided Tour (2 min)</button>
+      <div class="flex items-center gap-2.5 pt-1"><img src="https://i.pravatar.cc/100?img=32" class="w-8 h-8 rounded-full"><div class="leading-tight"><div class="text-[13px] font-medium">Anjali Patil</div><div class="text-[11px] text-ink-400">Front Desk • Demo Staff</div></div><span class="ml-auto w-2 h-2 rounded-full bg-emerald-500"></span></div>
     </div>
   </aside>
 
-  <!-- Main -->
+  <div id="sidebarBackdrop" class="fixed inset-0 bg-ink-900/40 backdrop-blur-sm z-20 hidden lg:hidden"></div>
+
+  <nav id="mobileBottomNav" class="lg:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-xl border-t border-slate-200 z-20 flex justify-around items-center px-1 py-1 pb-[calc(0.25rem+env(safe-area-inset-bottom))] safe-bottom">
+    <button data-mnav="overview" class="mnav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl bg-ink-900 text-white min-w-[56px]"><span class="text-[18px]">◧</span><span class="text-[10px] font-medium tracking-wide">Overview</span></button>
+    <button data-mnav="enquiries" class="mnav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-ink-400 min-w-[56px]"><span class="text-[18px]">◩</span><span class="text-[10px] font-medium">Enquiries</span></button>
+    <button data-mnav="conversations" class="mnav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-ink-400 min-w-[56px]"><span class="text-[18px]">◫</span><span class="text-[10px] font-medium">Chats</span></button>
+    <button data-mnav="leads" class="mnav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-ink-400 min-w-[56px]"><span class="text-[18px]">◎</span><span class="text-[10px] font-medium">Leads</span></button>
+    <button data-mnav="analytics" class="mnav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-ink-400 min-w-[56px]"><span class="text-[18px]">◰</span><span class="text-[10px] font-medium">Analytics</span></button>
+  </nav>
+
   <div class="flex-1 min-w-0 flex flex-col">
-    <header class="sticky top-0 z-20 bg-white/80 backdrop-blur-xl border-b border-slate-200">
-      <div class="h-[64px] px-4 lg:px-8 flex items-center justify-between gap-3">
-        <div class="flex items-center gap-3">
-          <button id="mobileMenu" class="lg:hidden w-9 h-9 grid place-items-center rounded-xl border border-slate-200">☰</button>
-          <div>
-            <h1 id="pageTitle" class="font-semibold tracking-tight text-[16px]">Overview</h1>
-            <div class="text-[11px] text-ink-400 hidden md:block">DEMO DATA • Not connected to hospital systems • For sales demonstration only</div>
-          </div>
+    <header class="sticky top-0 z-20 bg-white/90 backdrop-blur-xl border-b border-slate-200">
+      <div class="h-[56px] lg:h-[64px] px-3 lg:px-8 flex items-center justify-between gap-2">
+        <div class="flex items-center gap-2 min-w-0">
+          <button id="mobileMenu" class="lg:hidden w-11 h-11 grid place-items-center rounded-xl border border-slate-200 bg-white shrink-0 active:bg-slate-50">☰</button>
+          <div class="min-w-0"><h1 id="pageTitle" class="font-semibold tracking-tight text-[15px] lg:text-[16px] truncate">Overview</h1><div class="text-[10px] lg:text-[11px] text-ink-400 hidden sm:block truncate">DEMO • Not connected • Sales demo only</div></div>
         </div>
-        <div class="flex items-center gap-2">
-          <div class="hidden lg:flex items-center gap-2 text-[11px] px-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> AI • Online • &lt;2s
-          </div>
-          <button id="notifBtn" class="relative w-9 h-9 grid place-items-center rounded-full border border-slate-200 bg-white hover:bg-slate-50">
-            <span class="text-[16px]">◍</span>
-            <span id="notifBadge" class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-bold rounded-full grid place-items-center">3</span>
-          </button>
-          <button id="runDemoBtn" class="inline-flex items-center gap-1.5 px-4 h-9 rounded-full bg-ink-900 text-white text-[12.5px] font-medium hover:bg-black transition">▶ Run Live Demo</button>
-          <div class="w-px h-6 bg-slate-200 mx-1 hidden sm:block"></div>
-          <div class="text-right hidden sm:block leading-tight"><div class="text-[11px] font-medium">Vyravo AI Demo</div><div class="text-[10px] text-ink-400">v2.0 • Guided Tour Ready</div></div>
+        <div class="flex items-center gap-1.5 lg:gap-2 shrink-0">
+          <div class="hidden xl:flex items-center gap-2 text-[11px] px-3 py-1.5 rounded-full bg-white border border-slate-200 shadow-sm"><span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> AI • Online • &lt;2s</div>
+          <button id="notifBtn" class="relative w-11 h-11 grid place-items-center rounded-full border border-slate-200 bg-white active:bg-slate-50"><span class="text-[16px]">◍</span><span id="notifBadge" class="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-red-500 text-white text-[10px] font-bold rounded-full grid place-items-center">3</span></button>
+          <button id="runDemoBtn" class="inline-flex items-center gap-1 px-3.5 lg:px-4 h-11 lg:h-9 rounded-full bg-ink-900 text-white text-[12px] lg:text-[12.5px] font-medium active:bg-black"><span class="hidden sm:inline">▶ Run Live Demo</span><span class="sm:hidden">▶ Demo</span></button>
         </div>
       </div>
-      <!-- Notification Dropdown -->
-      <div id="notifDropdown" class="hidden absolute top-[64px] right-3 lg:right-8 w-[360px] bg-white rounded-[16px] shadow-float border border-slate-200 z-30 overflow-hidden">
-        <div class="p-4 border-b border-slate-100 flex items-center justify-between"><div class="font-semibold text-[13px]">Notifications • DEMO</div><button onclick="clearNotifs()" class="text-[11px] text-ink-400 hover:text-ink-900">Clear</button></div>
-        <div id="notifList" class="max-h-[340px] overflow-auto divide-y divide-slate-50"></div>
-        <div class="p-2.5 bg-slate-50 text-[11px] text-center text-ink-400">Demo notifications • Not real push</div>
+      <div id="notifDropdown" class="hidden absolute top-[56px] lg:top-[64px] right-2 left-2 lg:left-auto lg:right-8 lg:w-[380px] bg-white rounded-[20px] shadow-float border border-slate-200 z-30 overflow-hidden max-h-[70dvh] flex flex-col">
+        <div class="p-4 border-b border-slate-100 flex items-center justify-between shrink-0"><div class="font-semibold text-[13px]">Notifications • DEMO</div><button onclick="clearNotifs()" class="h-8 px-3 rounded-full bg-slate-50 border border-slate-200 text-[11px]">Clear</button></div>
+        <div id="notifList" class="flex-1 overflow-auto divide-y divide-slate-50"></div>
+        <div class="p-2.5 bg-slate-50 text-[11px] text-center text-ink-400 shrink-0">Demo notifications • Not real push</div>
       </div>
     </header>
-    <main id="content" class="flex-1 p-4 lg:p-8 pb-28"></main>
+    <main id="content" class="flex-1 p-3 lg:p-8 pb-[88px] lg:pb-28"></main>
   </div>
 </div>
 
-<!-- Patient Chat Widget v2 -->
-<div id="chatWidget" class="fixed bottom-4 right-4 z-50 w-[92vw] sm:w-[400px] flex flex-col">
-  <div id="chatLauncher" class="ml-auto relative w-14 h-14 rounded-full bg-ink-900 text-white grid place-items-center shadow-float cursor-pointer hover:scale-[1.03] transition">
+<!-- Chat Widget - Fully Mobile Optimized -->
+<div id="chatWidget" class="fixed bottom-[64px] lg:bottom-4 right-0 left-0 lg:left-auto lg:right-4 z-50 lg:w-[400px] flex flex-col items-end pointer-events-none px-2 lg:px-0">
+  <div id="chatLauncher" class="relative w-14 h-14 rounded-full bg-ink-900 text-white grid place-items-center shadow-float cursor-pointer active:scale-[0.97] transition pointer-events-auto mr-2 lg:mr-0">
     <span class="pulse-ring absolute inset-0 rounded-full"></span>
     <span class="text-[22px] relative">◈</span>
+    <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full grid place-items-center animate-pulse">•</span>
   </div>
-  <div id="chatPanel" class="hidden mt-3 bg-white rounded-[20px] shadow-float border border-slate-200 overflow-hidden flex flex-col h-[600px] max-h-[82vh]">
-    <div class="h-[64px] px-4 flex items-center justify-between bg-ink-900 text-white shrink-0">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-full bg-white/15 grid place-items-center">⚕</div>
-        <div class="leading-tight"><div class="text-[13px] font-semibold">Dr. Sanjay Sonar Center</div><div class="text-[11px] text-white/70 flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-emerald-400 rounded-full"></span>AI Assistant • Demo</div></div>
-      </div>
-      <div class="flex items-center gap-1.5">
-        <div class="flex items-center rounded-full bg-white/10 border border-white/15 p-0.5">
-          <button id="langEn" class="px-2.5 py-1 rounded-full text-[11px] font-medium bg-white text-ink-900">EN</button>
-          <button id="langHi" class="px-2.5 py-1 rounded-full text-[11px] font-medium text-white/70">हि</button>
-        </div>
-        <button id="closeChat" class="w-7 h-7 grid place-items-center rounded-full bg-white/10 hover:bg-white/15">✕</button>
-      </div>
+  <div id="chatPanel" class="hidden mt-3 bg-white rounded-t-[24px] lg:rounded-[20px] shadow-float border border-slate-200 overflow-hidden flex-col h-[78dvh] lg:h-[600px] max-h-[78dvh] lg:max-h-[82vh] w-full lg:w-[400px] pointer-events-auto fixed lg:relative bottom-0 lg:bottom-auto left-0 lg:left-auto right-0 lg:right-auto flex">
+    <div class="h-[56px] lg:h-[64px] px-4 flex items-center justify-between bg-ink-900 text-white shrink-0">
+      <div class="flex items-center gap-3 min-w-0"><div class="w-8 h-8 rounded-full bg-white/15 grid place-items-center shrink-0">⚕</div><div class="leading-tight min-w-0"><div class="text-[13px] font-semibold truncate">Dr. Sanjay Sonar Center</div><div class="text-[11px] text-white/70 flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></span>AI Assistant • Demo</div></div></div>
+      <div class="flex items-center gap-1.5 shrink-0"><div class="flex items-center rounded-full bg-white/10 border border-white/15 p-0.5"><button id="langEn" class="px-2.5 py-1.5 rounded-full text-[11px] font-medium bg-white text-ink-900 min-w-[36px]">EN</button><button id="langHi" class="px-2.5 py-1.5 rounded-full text-[11px] font-medium text-white/70 min-w-[36px]">हि</button></div><button id="closeChat" class="w-9 h-9 grid place-items-center rounded-full bg-white/10 active:bg-white/15">✕</button></div>
     </div>
-    <div class="px-3 py-2 bg-amber-50 border-b border-amber-100 text-[11px] text-amber-800 flex gap-2">
-      <span>ⓘ</span><span id="disclaimerText">Demo chat • No medical diagnosis. For emergencies, call 108 or visit nearest emergency dept.</span>
-    </div>
-    <div id="chatMessages" class="flex-1 overflow-auto p-4 space-y-3 bg-[#fcfcfd]"></div>
-    <div id="chatTyping" class="hidden px-4 pb-1 text-[11px] text-ink-400 flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-ink-400 rounded-full animate-bounce"></span><span class="w-1.5 h-1.5 bg-ink-400 rounded-full animate-bounce [animation-delay:0.1s]"></span><span class="w-1.5 h-1.5 bg-ink-400 rounded-full animate-bounce [animation-delay:0.2s]"></span> AI is typing…</div>
-    <div class="p-3 border-t border-slate-100 bg-white">
-      <div id="quickReplies" class="flex flex-wrap gap-1.5 mb-2.5"></div>
-      <div class="flex items-center gap-2">
-        <input id="chatInput" placeholder="Type your enquiry… / अपनी जिज्ञासा लिखें…" class="flex-1 h-10 px-4 rounded-full bg-slate-50 border border-slate-200 text-[13px] outline-none focus:border-ink-900 focus:bg-white">
-        <button id="chatSend" class="w-10 h-10 rounded-full bg-ink-900 text-white grid place-items-center hover:bg-black">↗</button>
-      </div>
-      <div class="flex items-center justify-between mt-2">
-        <div class="text-[10px] text-ink-400">Powered by Vyravo AI • Demo • No medical advice</div>
-        <div class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">⚡ Avg reply &lt;2s</div>
-      </div>
+    <div class="px-3 py-2.5 bg-amber-50 border-b border-amber-100 text-[11px] text-amber-800 flex gap-2 leading-5"><span class="shrink-0">ⓘ</span><span id="disclaimerText">Demo chat • No medical diagnosis. For emergencies, call 108.</span></div>
+    <div id="chatMessages" class="flex-1 overflow-auto p-3 lg:p-4 space-y-3 bg-[#fcfcfd]"></div>
+    <div id="chatTyping" class="hidden px-4 pb-2 text-[11px] text-ink-400 flex items-center gap-1.5"><span class="w-1.5 h-1.5 bg-ink-400 rounded-full animate-bounce"></span><span class="w-1.5 h-1.5 bg-ink-400 rounded-full animate-bounce [animation-delay:0.1s]"></span><span class="w-1.5 h-1.5 bg-ink-400 rounded-full animate-bounce [animation-delay:0.2s]"></span> AI is typing…</div>
+    <div class="p-3 border-t border-slate-100 bg-white safe-bottom">
+      <div id="quickReplies" class="flex flex-wrap gap-1.5 mb-3"></div>
+      <div class="flex items-center gap-2"><input id="chatInput" placeholder="Type enquiry… / जिज्ञासा लिखें…" class="flex-1 h-12 lg:h-10 px-4 rounded-full bg-slate-50 border border-slate-200 text-[14px] lg:text-[13px] outline-none focus:border-ink-900 focus:bg-white"><button id="chatSend" class="w-12 h-12 lg:w-10 lg:h-10 rounded-full bg-ink-900 text-white grid place-items-center active:bg-black shrink-0">↗</button></div>
+      <div class="flex items-center justify-between mt-2.5"><div class="text-[10px] text-ink-400">Vyravo AI • Demo</div><div class="text-[10px] px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-100">⚡ &lt;2s</div></div>
     </div>
   </div>
 </div>
 
-<!-- Lead Drawer -->
+<!-- Lead Drawer - Mobile Optimized -->
 <div id="drawer" class="fixed inset-0 z-40 hidden">
   <div id="drawerBg" class="absolute inset-0 bg-ink-900/30 backdrop-blur-sm"></div>
   <div class="absolute right-0 top-0 h-full w-full sm:w-[500px] bg-white shadow-2xl border-l border-slate-200 flex flex-col">
-    <div class="h-[64px] px-6 flex items-center justify-between border-b border-slate-100 shrink-0">
-      <div class="font-semibold">Lead Details • DEMO</div>
-      <button id="closeDrawer" class="w-8 h-8 grid place-items-center rounded-full border border-slate-200">✕</button>
-    </div>
-    <div id="drawerContent" class="flex-1 overflow-auto p-6"></div>
+    <div class="h-[56px] lg:h-[64px] px-4 lg:px-6 flex items-center justify-between border-b border-slate-100 shrink-0"><div class="font-semibold text-[14px] lg:text-[15px]">Lead Details • DEMO</div><button id="closeDrawer" class="w-10 h-10 grid place-items-center rounded-full border border-slate-200 active:bg-slate-50">✕</button></div>
+    <div id="drawerContent" class="flex-1 overflow-auto p-4 lg:p-6 pb-[env(safe-area-inset-bottom)]"></div>
   </div>
 </div>
 
-<!-- Assign Modal -->
+<!-- Modals - Mobile Optimized -->
 <div id="assignModal" class="fixed inset-0 z-50 hidden">
   <div id="assignBg" class="absolute inset-0 bg-ink-900/40 backdrop-blur-sm"></div>
-  <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[92vw] max-w-[440px] bg-white rounded-[20px] shadow-2xl border border-slate-200 p-6">
+  <div class="absolute left-0 right-0 bottom-0 lg:left-1/2 lg:right-auto lg:bottom-auto lg:top-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2 w-full lg:w-[92vw] lg:max-w-[440px] bg-white rounded-t-[24px] lg:rounded-[20px] shadow-2xl border border-slate-200 p-5 lg:p-6 safe-bottom">
+    <div class="w-10 h-1 rounded-full bg-slate-200 mx-auto mb-4 lg:hidden"></div>
     <div class="font-semibold text-[16px]">Human Handoff • Assign to Staff</div>
-    <div class="text-[12px] text-ink-600 mt-1">Stops automated follow-ups and notifies staff. Demo action only — no real notification sent.</div>
+    <div class="text-[12px] text-ink-600 mt-1 leading-5">Stops automated follow-ups and notifies staff. Demo only.</div>
     <div class="mt-5 space-y-4">
-      <div><label class="text-[11px] font-semibold tracking-widest uppercase text-ink-400">Assign to</label><select id="assignStaff" class="mt-1.5 w-full h-11 px-3 rounded-xl border border-slate-200 bg-slate-50 text-[13px]"></select></div>
-      <div><label class="text-[11px] font-semibold tracking-widest uppercase text-ink-400">Internal note</label><textarea id="assignNote" rows="3" placeholder="Patient prefers Hindi, callback after 6pm, etc..." class="mt-1.5 w-full px-3 py-2.5 rounded-xl border border-slate-200 bg-slate-50 text-[13px]"></textarea></div>
-      <div class="flex gap-2 justify-end pt-2"><button id="cancelAssign" class="h-10 px-4 rounded-full border border-slate-200 text-[13px]">Cancel</button><button id="confirmAssign" class="h-10 px-5 rounded-full bg-ink-900 text-white text-[13px] font-medium">Assign & Stop Automation</button></div>
+      <div><label class="text-[11px] font-semibold tracking-widest uppercase text-ink-400">Assign to</label><select id="assignStaff" class="mt-1.5 w-full h-12 px-3 rounded-xl border border-slate-200 bg-slate-50 text-[14px] lg:text-[13px]"></select></div>
+      <div><label class="text-[11px] font-semibold tracking-widest uppercase text-ink-400">Internal note</label><textarea id="assignNote" rows="3" placeholder="Patient prefers Hindi, callback after 6pm..." class="mt-1.5 w-full px-3 py-3 rounded-xl border border-slate-200 bg-slate-50 text-[14px] lg:text-[13px]"></textarea></div>
+      <div class="flex gap-2 justify-end pt-2 safe-bottom"><button id="cancelAssign" class="flex-1 lg:flex-none h-12 lg:h-10 px-4 rounded-full border border-slate-200 text-[14px] lg:text-[13px] font-medium">Cancel</button><button id="confirmAssign" class="flex-1 lg:flex-none h-12 lg:h-10 px-5 rounded-full bg-ink-900 text-white text-[14px] lg:text-[13px] font-medium">Assign & Stop</button></div>
     </div>
   </div>
 </div>
 
-<!-- Calendar Modal -->
 <div id="calendarModal" class="fixed inset-0 z-50 hidden">
   <div id="calendarBg" class="absolute inset-0 bg-ink-900/40 backdrop-blur-sm"></div>
-  <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[92vw] max-w-[380px] bg-white rounded-[20px] shadow-2xl border border-slate-200 p-5">
-    <div class="flex items-center justify-between"><div class="font-semibold">Book Consultation • DEMO</div><button id="closeCalendar" class="w-7 h-7 grid place-items-center rounded-full border border-slate-200">✕</button></div>
-    <div class="text-[12px] text-ink-600 mt-1">Demo calendar — not connected to real appointment system.</div>
-    <div class="mt-4 grid grid-cols-7 gap-1 text-[11px] text-center">
-      <div class="text-ink-400 font-semibold">Mon</div><div class="text-ink-400 font-semibold">Tue</div><div class="text-ink-400 font-semibold">Wed</div><div class="text-ink-400 font-semibold">Thu</div><div class="text-ink-400 font-semibold">Fri</div><div class="text-ink-400 font-semibold">Sat</div><div class="text-ink-400 font-semibold">Sun</div>
-      <div class="h-9 grid place-items-center rounded-full">26</div><div class="h-9 grid place-items-center rounded-full">27</div><div class="h-9 grid place-items-center rounded-full">28</div><div class="h-9 grid place-items-center rounded-full bg-ink-900 text-white">29</div><div class="h-9 grid place-items-center rounded-full border border-slate-200">30</div><div class="h-9 grid place-items-center rounded-full bg-slate-50">31</div><div class="h-9 grid place-items-center rounded-full">1</div>
-      <div class="h-9 grid place-items-center rounded-full">2</div><div class="h-9 grid place-items-center rounded-full">3</div><div class="h-9 grid place-items-center rounded-full border border-teal-200 bg-teal-50 text-teal-700">4</div><div class="h-9 grid place-items-center rounded-full">5</div><div class="h-9 grid place-items-center rounded-full">6</div><div class="h-9 grid place-items-center rounded-full">7</div><div class="h-9 grid place-items-center rounded-full">8</div>
+  <div class="absolute left-0 right-0 bottom-0 lg:left-1/2 lg:right-auto lg:bottom-auto lg:top-1/2 lg:-translate-x-1/2 lg:-translate-y-1/2 w-full lg:w-[92vw] lg:max-w-[380px] bg-white rounded-t-[24px] lg:rounded-[20px] shadow-2xl border border-slate-200 p-5 safe-bottom">
+    <div class="w-10 h-1 rounded-full bg-slate-200 mx-auto mb-4 lg:hidden"></div>
+    <div class="flex items-center justify-between"><div class="font-semibold">Book Consultation • DEMO</div><button id="closeCalendar" class="w-10 h-10 grid place-items-center rounded-full border border-slate-200 active:bg-slate-50">✕</button></div>
+    <div class="text-[12px] text-ink-600 mt-1">Demo calendar — not connected to real system.</div>
+    <div class="mt-4 grid grid-cols-7 gap-1 text-[11px] text-center"><div class="text-ink-400 font-semibold py-1">Mon</div><div class="text-ink-400 font-semibold py-1">Tue</div><div class="text-ink-400 font-semibold py-1">Wed</div><div class="text-ink-400 font-semibold py-1">Thu</div><div class="text-ink-400 font-semibold py-1">Fri</div><div class="text-ink-400 font-semibold py-1">Sat</div><div class="text-ink-400 font-semibold py-1">Sun</div>
+      <div class="h-11 grid place-items-center rounded-full active:bg-slate-100">26</div><div class="h-11 grid place-items-center rounded-full active:bg-slate-100">27</div><div class="h-11 grid place-items-center rounded-full active:bg-slate-100">28</div><div class="h-11 grid place-items-center rounded-full bg-ink-900 text-white">29</div><div class="h-11 grid place-items-center rounded-full border border-slate-200">30</div><div class="h-11 grid place-items-center rounded-full bg-slate-50">31</div><div class="h-11 grid place-items-center rounded-full">1</div>
+      <div class="h-11 grid place-items-center rounded-full">2</div><div class="h-11 grid place-items-center rounded-full">3</div><div class="h-11 grid place-items-center rounded-full border border-teal-200 bg-teal-50 text-teal-700">4</div><div class="h-11 grid place-items-center rounded-full">5</div><div class="h-11 grid place-items-center rounded-full">6</div><div class="h-11 grid place-items-center rounded-full">7</div><div class="h-11 grid place-items-center rounded-full">8</div>
     </div>
-    <div class="mt-4 space-y-2">
-      <div class="text-[11px] font-semibold tracking-widest uppercase text-ink-400">Available Slots • Sep 29 (Demo)</div>
-      <div class="grid grid-cols-3 gap-2">
-        <button class="h-9 rounded-full border border-slate-200 text-[12px] hover:border-ink-900 hover:bg-ink-900 hover:text-white">10:30 AM</button>
-        <button class="h-9 rounded-full border border-slate-200 text-[12px] hover:border-ink-900 hover:bg-ink-900 hover:text-white">11:15 AM</button>
-        <button class="h-9 rounded-full bg-ink-900 text-white text-[12px]">04:00 PM • Selected</button>
-      </div>
-    </div>
-    <button onclick="document.getElementById('calendarModal').classList.add('hidden'); showToast('Demo: Slot selected — in production this would confirm booking');" class="mt-5 w-full h-10 rounded-full bg-ink-900 text-white text-[13px] font-medium">Confirm Booking (Demo)</button>
+    <div class="mt-5 space-y-3"><div class="text-[11px] font-semibold tracking-widest uppercase text-ink-400">Available Slots • Sep 29 (Demo)</div><div class="grid grid-cols-2 sm:grid-cols-3 gap-2"><button class="h-11 rounded-full border border-slate-200 text-[13px] active:bg-ink-900 active:text-white">10:30 AM</button><button class="h-11 rounded-full border border-slate-200 text-[13px] active:bg-ink-900 active:text-white">11:15 AM</button><button class="h-11 rounded-full bg-ink-900 text-white text-[13px] col-span-2 sm:col-span-1">04:00 PM • Selected</button></div></div>
+    <button onclick="document.getElementById('calendarModal').classList.add('hidden'); showToast('Demo: Slot selected — prod would confirm booking');" class="mt-6 w-full h-12 rounded-full bg-ink-900 text-white text-[14px] font-medium active:bg-black safe-bottom">Confirm Booking (Demo)</button>
   </div>
 </div>
 
-<!-- Tour Overlay v2.1 Fixed -->
+<!-- Tour Overlay v2.2 Mobile Fixed -->
 <div id="tourOverlay" class="fixed inset-0 z-[70] hidden">
-  <div id="tourBg" class="absolute inset-0 bg-ink-900/70 backdrop-blur-[1px] cursor-pointer"></div>
-  <div id="tourSpotlight" class="absolute rounded-[20px] border-2 border-white shadow-[0_0_0_9999px_rgba(15,23,42,0.65)] transition-all duration-500 pointer-events-none"></div>
-  <div id="tourCard" class="absolute bg-white rounded-[20px] shadow-float border border-slate-200 p-6 w-[400px] max-w-[92vw] transition-all duration-300 z-10">
-    <div class="flex items-start justify-between gap-3">
-      <div class="w-8 h-8 rounded-full bg-ink-900 text-white grid place-items-center text-[12px] font-bold" id="tourStepNum">1</div>
-      <div class="flex items-center gap-2">
-        <span class="text-[10px] px-2 py-1 rounded-full bg-slate-100 border border-slate-200" id="tourProgress">1 / 5</span>
-        <button id="tourSkip" class="text-[11px] text-ink-400 hover:text-ink-900 px-2 py-1 rounded-full hover:bg-slate-50">Skip tour ✕</button>
-      </div>
-    </div>
-    <div class="mt-3 font-semibold text-[16px] leading-tight" id="tourTitle">Welcome to Vyravo AI Demo</div>
-    <div class="mt-2 text-[13px] leading-6 text-ink-600" id="tourDesc">This 2-min guided tour shows the exact flow you'll demo to Dr. Sanjay.</div>
-    <div class="mt-5 flex items-center justify-between">
-      <div class="flex gap-1.5" id="tourDots"></div>
-      <div class="flex gap-2"><button id="tourPrev" class="h-9 px-4 rounded-full border border-slate-200 text-[12px] font-medium hover:bg-slate-50">Back</button><button id="tourNext" class="h-9 px-5 rounded-full bg-ink-900 text-white text-[12px] font-medium hover:bg-black">Next →</button></div>
-    </div>
-    <div class="mt-3 text-[10px] text-ink-400 text-center">Press ESC or click outside to exit • Click Finish to close</div>
+  <div id="tourBg" class="absolute inset-0 bg-ink-900/75 backdrop-blur-[2px] cursor-pointer"></div>
+  <div id="tourSpotlight" class="hidden lg:block absolute rounded-[20px] border-2 border-white shadow-[0_0_0_9999px_rgba(15,23,42,0.65)] transition-all duration-500 pointer-events-none"></div>
+  <div id="tourCard" class="absolute bg-white rounded-[20px] lg:rounded-[20px] shadow-float border border-slate-200 p-5 lg:p-6 w-auto lg:w-[400px] max-w-[92vw] lg:max-w-[92vw] transition-all duration-300 z-10 safe-bottom">
+    <div class="flex items-start justify-between gap-3"><div class="w-8 h-8 rounded-full bg-ink-900 text-white grid place-items-center text-[12px] font-bold" id="tourStepNum">1</div><div class="flex items-center gap-2"><span class="text-[10px] px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 font-medium" id="tourProgress">1 / 5</span><button id="tourSkip" class="h-8 px-3 rounded-full bg-slate-50 border border-slate-200 text-[11px] font-medium active:bg-slate-100">Skip ✕</button></div></div>
+    <div class="mt-3 font-semibold text-[16px] lg:text-[16px] leading-tight" id="tourTitle">Welcome</div>
+    <div class="mt-2 text-[13px] lg:text-[13px] leading-6 text-ink-600" id="tourDesc">Tour desc</div>
+    <div class="mt-5 flex items-center justify-between gap-3"><div class="flex gap-1.5" id="tourDots"></div><div class="flex gap-2"><button id="tourPrev" class="h-11 lg:h-9 px-5 rounded-full border border-slate-200 text-[13px] lg:text-[12px] font-medium active:bg-slate-50">Back</button><button id="tourNext" class="h-11 lg:h-9 px-6 rounded-full bg-ink-900 text-white text-[13px] lg:text-[12px] font-medium active:bg-black">Next →</button></div></div>
+    <div class="mt-3 text-[10px] text-ink-400 text-center leading-4">Tap outside or press ESC to exit • Works on mobile & tablet</div>
   </div>
 </div>
 
 <script>
-/* ================= DATA LAYER (would be API in prod) ================= */
 const STAFF = [
   {id:'s1', name:'Dr. Sanjay Sonar', role:'Consultant Surgeon', avatar:'https://i.pravatar.cc/100?img=11'},
   {id:'s2', name:'Anjali Patil', role:'Front Desk Coordinator', avatar:'https://i.pravatar.cc/100?img=32'},
@@ -277,7 +232,6 @@ function rebuildFollowups(){
 rebuildFollowups();
 let currentNav='overview', selectedLeadId=null, assignTargetId=null, chatLang='en', convFilter='all', tourStep=0, chatState={step:'idle', data:{}}, chatHistory=[];
 
-/* Helpers */
 const fmtTime = iso => { const d=new Date(iso), now=new Date(), diff=(now-d)/1000; if(diff<60) return 'Just now'; if(diff<3600) return Math.floor(diff/60)+'m ago'; if(diff<86400) return Math.floor(diff/3600)+'h ago'; if(diff<172800) return 'Yesterday'; return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short'})+' '+d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}); };
 const statusMeta = {
   new:{label:'New Enquiry', color:'bg-blue-50 text-blue-700 border-blue-200'},
@@ -300,7 +254,7 @@ const i18n = {
     askEmail: (pref) => `Perfect. We have noted your preference for ${pref}. Optionally, you may share your email for confirmation. Or type "skip" to continue.`,
     thanks: (name,enq) => `Thank you, ${name.split(' ')[0]}! Your enquiry has been received. Our team will assist you with the next steps for ${enq.slice(0,50)}. You will receive a confirmation shortly. This is a demo — no real appointment has been booked.`,
     emergency: "I understand this may feel urgent. I am an automated assistant and cannot provide emergency medical advice. If you are experiencing a medical emergency, please call your local emergency services (e.g., 108 in India) or visit the nearest emergency department immediately. For non-emergency consultation, our team can assist during working hours.",
-    disclaimer: "Demo chat • No medical diagnosis. For emergencies, call 108 or visit nearest emergency dept."
+    disclaimer: "Demo chat • No medical diagnosis. For emergencies, call 108."
   },
   hi: {
     greet: "नमस्ते! Dr. Sanjay Sonar Laparoscopy and Scopy Center में आपका स्वागत है। मैं आपकी consultation enquiry में मदद कर सकता हूँ। कृपया अपना नाम और पसंदीदा तारीख बताइए।",
@@ -314,12 +268,13 @@ const i18n = {
   }
 };
 
-/* Renderers */
 function render(){
   document.querySelectorAll('[data-count="enquiries"]').forEach(el=>el.textContent=LEADS.length);
   document.querySelectorAll('[data-count="followups"]').forEach(el=>el.textContent=FOLLOWUPS.filter(f=>f.status==='scheduled').length);
-  document.getElementById('notifBadge').textContent = NOTIFICATIONS.filter(n=>!n.read).length || '';
-  document.getElementById('notifBadge').classList.toggle('hidden', NOTIFICATIONS.filter(n=>!n.read).length===0);
+  const badge=document.getElementById('notifBadge');
+  const unread=NOTIFICATIONS.filter(n=>!n.read).length;
+  badge.textContent = unread || '';
+  badge.classList.toggle('hidden', unread===0);
   const c=document.getElementById('content');
   if(currentNav==='overview') c.innerHTML=renderOverview();
   else if(currentNav==='enquiries') c.innerHTML=renderEnquiries();
@@ -330,231 +285,210 @@ function render(){
   else if(currentNav==='settings') c.innerHTML=renderSettings();
   renderNotifs();
 }
+
 function renderOverview(){
   const a=calcAnalytics();
   return `
-  <div class="max-w-[1280px] mx-auto space-y-6">
-    <div class="flex flex-wrap items-start justify-between gap-4">
-      <div>
-        <div class="inline-flex items-center gap-2 text-[11px] font-semibold tracking-widest uppercase text-teal-700 bg-teal-50 border border-teal-100 px-2.5 py-1 rounded-full">Vyravo AI Demo v2 • Dr. Sanjay Sonar Center • Guided Tour Ready</div>
-        <h2 class="mt-3 font-display text-[32px] leading-[1.05] tracking-tight">Every enquiry gets a response.<br><span class="text-ink-400">Every lead is tracked.</span></h2>
-        <p class="mt-3 text-[13.5px] leading-6 text-ink-600 max-w-[580px]">Live sales demo with <b>guided tour, notifications, WhatsApp view, Hindi mode, and booking calendar</b>. All data is <span class="font-semibold">DEMO DATA</span> — not connected to real hospital systems.</p>
+  <div class="max-w-[1280px] mx-auto space-y-4 lg:space-y-6">
+    <div class="flex flex-col lg:flex-row lg:items-start justify-between gap-3 lg:gap-4">
+      <div class="min-w-0">
+        <div class="inline-flex items-center gap-2 text-[10px] lg:text-[11px] font-semibold tracking-widest uppercase text-teal-700 bg-teal-50 border border-teal-100 px-2.5 py-1 rounded-full">Vyravo AI Demo v2.2 • Mobile Optimized • Dr. Sanjay Sonar</div>
+        <h2 class="mt-3 font-display text-[26px] sm:text-[28px] lg:text-[32px] leading-[1.05] tracking-tight">Every enquiry gets a response.<br><span class="text-ink-400">Every lead is tracked.</span></h2>
+        <p class="mt-3 text-[13px] lg:text-[13.5px] leading-6 text-ink-600 max-w-[580px]">Live sales demo optimized for <b>mobile, tablet & desktop</b> — guided tour, notifications, WhatsApp view, Hindi mode, calendar. All <span class="font-semibold">DEMO DATA</span>.</p>
       </div>
-      <div class="flex gap-2">
-        <button onclick="startTour()" class="h-10 px-5 rounded-full bg-white border border-slate-200 text-[13px] font-medium shadow-sm">✦ Start Tour</button>
-        <button onclick="openChat(true)" class="h-10 px-5 rounded-full bg-white border border-slate-200 text-[13px] font-medium shadow-sm">Open Patient Chat</button>
-        <button id="heroDemoBtn" onclick="triggerDemo()" class="h-10 px-5 rounded-full bg-ink-900 text-white text-[13px] font-medium shadow-card">▶ Run Live Demo</button>
+      <div class="flex gap-2 shrink-0">
+        <button onclick="startTour()" class="h-11 lg:h-10 px-4 lg:px-5 rounded-full bg-white border border-slate-200 text-[12px] lg:text-[13px] font-medium shadow-sm active:bg-slate-50 flex-1 lg:flex-none justify-center flex items-center gap-1.5"><span>✦</span> Tour</button>
+        <button id="heroDemoBtn" onclick="triggerDemo()" class="h-11 lg:h-10 px-5 rounded-full bg-ink-900 text-white text-[12px] lg:text-[13px] font-medium shadow-card active:bg-black flex-1 lg:flex-none">▶ Run Demo</button>
       </div>
     </div>
-    <div id="tourTarget-metrics" class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+
+    <div id="tourTarget-metrics" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
       ${[
-        {k:'Total Enquiries (Demo)', v:a.total, sub:`${a.newCount} new • ${a.followDue} follow-up due`, icon:'◩'},
-        {k:'AI Response Rate', v:a.responseRate+'%', sub:'Avg < 2s • 24/7 • EN/हि', icon:'⚡'},
-        {k:'Follow-ups Completed', v:a.followSent, sub:`${FOLLOWUPS.filter(f=>f.status==='scheduled').length} scheduled • Auto`, icon:'◪'},
-        {k:'Conversion (Demo)', v:a.conversionRate+'%', sub:`${a.converted} booked / ${a.total} total`, icon:'◎'},
-      ].map(card=>`<div class="bg-white rounded-[16px] border border-slate-200 p-4 shadow-card"><div class="flex items-center justify-between"><div class="text-[11px] font-semibold tracking-widest uppercase text-ink-400">${card.k}</div><span class="w-6 h-6 rounded-full bg-slate-50 border border-slate-200 grid place-items-center text-[11px]">${card.icon}</span></div><div class="mt-2 text-[28px] font-semibold tracking-tight">${card.v}</div><div class="text-[12px] text-ink-600 mt-1">${card.sub}</div></div>`).join('')}
+        {k:'Total Enquiries', v:a.total, sub:`${a.newCount} new • ${a.followDue} due`, icon:'◩'},
+        {k:'AI Response Rate', v:a.responseRate+'%', sub:'<2s • 24/7 • EN/हि', icon:'⚡'},
+        {k:'Follow-ups', v:a.followSent, sub:`${FOLLOWUPS.filter(f=>f.status==='scheduled').length} scheduled`, icon:'◪'},
+        {k:'Conversion', v:a.conversionRate+'%', sub:`${a.converted} booked / ${a.total}`, icon:'◎'},
+      ].map(card=>`<div class="bg-white rounded-[16px] border border-slate-200 p-4 shadow-card"><div class="flex items-center justify-between"><div class="text-[11px] font-semibold tracking-widest uppercase text-ink-400">${card.k}</div><span class="w-6 h-6 rounded-full bg-slate-50 border border-slate-200 grid place-items-center text-[11px]">${card.icon}</span></div><div class="mt-2 text-[26px] lg:text-[28px] font-semibold tracking-tight">${card.v}</div><div class="text-[12px] text-ink-600 mt-1">${card.sub}</div></div>`).join('')}
     </div>
-    <div class="grid lg:grid-cols-[1.2fr_0.8fr] gap-6">
-      <div id="tourTarget-flow" class="bg-white rounded-[20px] border border-slate-200 shadow-card p-6">
-        <div class="flex items-center justify-between"><div class="font-semibold">Demo Flow • 5–10 min • v2 Enhanced</div><div class="text-[11px] px-2 py-1 rounded-full bg-slate-50 border border-slate-200">Patient → AI → Lead → Follow-up → Handoff → Analytics</div></div>
-        <div class="mt-6 grid grid-cols-1 sm:grid-cols-4 gap-3">
+
+    <div class="grid lg:grid-cols-[1.2fr_0.8fr] gap-4 lg:gap-6">
+      <div id="tourTarget-flow" class="bg-white rounded-[20px] border border-slate-200 shadow-card p-4 lg:p-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2"><div class="font-semibold text-[14px]">Demo Flow • 5-10 min • Mobile Ready</div><div class="text-[10px] lg:text-[11px] px-2.5 py-1 rounded-full bg-slate-50 border border-slate-200 w-fit">Patient → AI → Lead → Follow-up → Handoff</div></div>
+        <div class="mt-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           ${[
-            {n:'1', t:'Patient Enquiry', d:'Website chat + WhatsApp (Demo) + Hindi toggle. Mobile-friendly widget.'},
-            {n:'2', t:'AI Instant Response', d:'Replies <2s, collects name/phone/date. No diagnosis. EN/हि support.'},
-            {n:'3', t:'Lead Captured', d:'Auto-create with source, status, timestamp. Bell notification to staff.'},
-            {n:'4', t:'Follow-up & Handoff', d:'0h, 24h, 3d nudges. Assign stops automation. Calendar booking mock.'},
-          ].map(s=>`<div class="rounded-[14px] border border-slate-200 p-4 bg-slate-50/60 hover:bg-white hover:shadow-card transition"><div class="w-7 h-7 rounded-full bg-ink-900 text-white grid place-items-center text-[12px] font-semibold">${s.n}</div><div class="mt-3 font-medium text-[13px]">${s.t}</div><div class="mt-1 text-[12px] leading-5 text-ink-600">${s.d}</div></div>`).join('')}
+            {n:'1', t:'Patient Enquiry', d:'Website + WhatsApp + Hindi toggle. Bottom sheet on mobile.'},
+            {n:'2', t:'AI Instant Response', d:'<2s, collects name/phone/date. No diagnosis. EN/हि.'},
+            {n:'3', t:'Lead Captured', d:'Auto-create with source, timestamp. Bell notification.'},
+            {n:'4', t:'Follow-up & Handoff', d:'0h,24h,3d nudges. Assign stops automation. Calendar mock.'},
+          ].map(s=>`<div class="rounded-[14px] border border-slate-200 p-4 bg-slate-50/60"><div class="w-7 h-7 rounded-full bg-ink-900 text-white grid place-items-center text-[12px] font-semibold">${s.n}</div><div class="mt-3 font-medium text-[13px]">${s.t}</div><div class="mt-1 text-[12px] leading-5 text-ink-600">${s.d}</div></div>`).join('')}
         </div>
-        <div class="mt-6 rounded-xl bg-amber-50 border border-amber-200 p-3.5 text-[12px] text-amber-900 flex gap-2"><span>⚠</span><span><b>Demo safety:</b> AI does not provide medical diagnosis, treatment recommendations, or emergency advice. Emergency keywords trigger escalation. All data synthetic.</span></div>
+        <div class="mt-5 rounded-xl bg-amber-50 border border-amber-200 p-3.5 text-[12px] text-amber-900 flex gap-2 leading-5"><span class="shrink-0">⚠</span><span><b>Demo safety:</b> No medical diagnosis. Emergency keywords → escalation to 108. All data synthetic.</span></div>
       </div>
       <div class="space-y-4">
-        <div id="tourTarget-attention" class="bg-white rounded-[20px] border border-slate-200 shadow-card p-5">
-          <div class="flex items-center justify-between"><div class="font-semibold text-[14px]">Attention Needed</div><span class="text-[11px] px-2 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">${a.attention} leads</span></div>
-          <div class="mt-4 space-y-2.5">
-            ${LEADS.filter(l=>['new','followup'].includes(l.status)).slice(0,4).map(l=>`<div class="flex items-center gap-3 p-2.5 rounded-xl border border-slate-100 hover:border-slate-200 cursor-pointer" onclick="openLead('${l.id}')"><div class="w-8 h-8 rounded-full bg-slate-100 grid place-items-center text-[11px] font-semibold">${l.name.split(' ').map(x=>x[0]).join('').slice(0,2)}</div><div class="min-w-0 flex-1"><div class="text-[13px] font-medium truncate">${l.name}</div><div class="text-[11px] text-ink-400 truncate">${l.enquiryType} • ${fmtTime(l.timestamp)} • ${l.source.includes('WhatsApp')?'🟢 WhatsApp':''}</div></div><span class="text-[10px] px-2 py-1 rounded-full border ${statusMeta[l.status].color}">${statusMeta[l.status].label}</span></div>`).join('')}
-          </div>
-          <button onclick="navigate('enquiries')" class="mt-4 w-full h-9 rounded-full border border-slate-200 text-[12px] font-medium">View all enquiries →</button>
+        <div id="tourTarget-attention" class="bg-white rounded-[20px] border border-slate-200 shadow-card p-4 lg:p-5">
+          <div class="flex items-center justify-between"><div class="font-semibold text-[14px]">Attention Needed</div><span class="text-[11px] px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">${a.attention} leads</span></div>
+          <div class="mt-4 space-y-2.5">${LEADS.filter(l=>['new','followup'].includes(l.status)).slice(0,4).map(l=>`<div class="flex items-center gap-3 p-3 rounded-xl border border-slate-100 active:bg-slate-50 cursor-pointer" onclick="openLead('${l.id}')"><div class="w-9 h-9 rounded-full bg-slate-100 grid place-items-center text-[11px] font-semibold shrink-0">${l.name.split(' ').map(x=>x[0]).join('').slice(0,2)}</div><div class="min-w-0 flex-1"><div class="text-[13px] font-medium truncate">${l.name}</div><div class="text-[11px] text-ink-400 truncate">${l.enquiryType} • ${fmtTime(l.timestamp)}</div></div><span class="text-[10px] px-2 py-1 rounded-full border ${statusMeta[l.status].color} shrink-0">${statusMeta[l.status].label.split(' ')[0]}</span></div>`).join('')}</div>
+          <button onclick="navigate('enquiries')" class="mt-4 w-full h-11 lg:h-9 rounded-full border border-slate-200 text-[13px] lg:text-[12px] font-medium active:bg-slate-50">View all enquiries →</button>
         </div>
-        <div class="bg-ink-900 text-white rounded-[20px] p-5">
-          <div class="text-[11px] tracking-widest uppercase text-white/60 font-semibold">v2 Improvements</div>
-          <div class="mt-2 font-display text-[17px] leading-tight">Now with notifications, WhatsApp view, Hindi, and guided tour.</div>
-          <div class="mt-3 space-y-1.5 text-[12px] text-white/75 leading-5">
-            <div>✦ Guided tour spotlights each step</div><div>🔔 Staff notified instantly on new lead</div><div>💬 WhatsApp (Demo) chat styling</div><div>हि Hindi toggle in patient chat</div><div>📅 Calendar booking mock</div>
-          </div>
-        </div>
+        <div class="bg-ink-900 text-white rounded-[20px] p-5"><div class="text-[11px] tracking-widest uppercase text-white/60 font-semibold">Mobile Optimized v2.2</div><div class="mt-2 font-display text-[17px] leading-tight">Works perfectly on phone, tablet & desktop.</div><div class="mt-3 space-y-1.5 text-[12px] text-white/75 leading-5"><div>✓ Bottom nav on mobile</div><div>✓ Bottom sheets for modals</div><div>✓ Cards instead of tables</div><div>✓ Chat as bottom sheet</div><div>✓ Touch targets 44px+</div></div></div>
       </div>
     </div>
-    <div id="tourTarget-recent" class="bg-white rounded-[20px] border border-slate-200 shadow-card">
-      <div class="p-6 flex items-center justify-between border-b border-slate-100"><div class="font-semibold">Recent Patient Enquiries • DEMO DATA • v2</div><div class="flex items-center gap-2"><span class="text-[11px] px-2 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">● Live • ${LEADS.length} total</span><span class="text-[11px] text-ink-400">Synthetic</span></div></div>
-      <div class="overflow-auto"><table class="w-full text-left"><thead class="text-[11px] tracking-widest uppercase text-ink-400 border-b border-slate-100"><tr><th class="px-6 py-3 font-semibold">Patient</th><th class="px-6 py-3 font-semibold">Enquiry</th><th class="px-6 py-3 font-semibold">Status</th><th class="px-6 py-3 font-semibold">Channel</th><th class="px-6 py-3 font-semibold">Time</th></tr></thead><tbody class="text-[13px]">${LEADS.slice(0,6).map(l=>`<tr class="border-b border-slate-50 hover:bg-slate-50/70 cursor-pointer" onclick="openLead('${l.id}')"><td class="px-6 py-3"><div class="font-medium flex items-center gap-1.5">${l.name} ${l.source.includes('WhatsApp')?'<span class="text-[11px]">🟢</span>':''}</div><div class="text-[11px] text-ink-400">${l.phone}</div></td><td class="px-6 py-3"><div class="truncate max-w-[260px]">${l.enquiryType}</div><div class="text-[11px] text-ink-400">${l.preferredDate}</div></td><td class="px-6 py-3"><span class="inline-flex text-[11px] px-2.5 py-1 rounded-full border ${statusMeta[l.status].color}">${statusMeta[l.status].label}</span></td><td class="px-6 py-3 text-[12px]">${l.source}</td><td class="px-6 py-3 text-[12px] text-ink-600">${fmtTime(l.timestamp)}</td></tr>`).join('')}</tbody></table></div>
+
+    <div id="tourTarget-recent" class="bg-white rounded-[20px] border border-slate-200 shadow-card overflow-hidden">
+      <div class="p-4 lg:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100"><div class="font-semibold text-[14px] lg:text-[15px]">Recent Enquiries • DEMO • v2.2</div><div class="flex items-center gap-2"><span class="text-[11px] px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">● Live • ${LEADS.length}</span><span class="text-[11px] text-ink-400 hidden sm:inline">Synthetic</span></div></div>
+      <div class="hidden md:block overflow-auto"><table class="w-full text-left"><thead class="text-[11px] tracking-widest uppercase text-ink-400 border-b border-slate-100"><tr><th class="px-6 py-3 font-semibold">Patient</th><th class="px-6 py-3 font-semibold">Enquiry</th><th class="px-6 py-3 font-semibold">Status</th><th class="px-6 py-3 font-semibold">Channel</th><th class="px-6 py-3 font-semibold">Time</th></tr></thead><tbody class="text-[13px]">${LEADS.slice(0,6).map(l=>`<tr class="border-b border-slate-50 hover:bg-slate-50/70 cursor-pointer" onclick="openLead('${l.id}')"><td class="px-6 py-3"><div class="font-medium flex items-center gap-1.5">${l.name} ${l.source.includes('WhatsApp')?'<span class="text-[11px]">🟢</span>':''}</div><div class="text-[11px] text-ink-400">${l.phone}</div></td><td class="px-6 py-3"><div class="truncate max-w-[260px]">${l.enquiryType}</div><div class="text-[11px] text-ink-400">${l.preferredDate}</div></td><td class="px-6 py-3"><span class="inline-flex text-[11px] px-2.5 py-1 rounded-full border ${statusMeta[l.status].color}">${statusMeta[l.status].label}</span></td><td class="px-6 py-3 text-[12px]">${l.source}</td><td class="px-6 py-3 text-[12px] text-ink-600">${fmtTime(l.timestamp)}</td></tr>`).join('')}</tbody></table></div>
+      <div class="md:hidden p-3 space-y-3">${LEADS.slice(0,6).map(l=>`<div class="p-3.5 rounded-[14px] border border-slate-200 bg-slate-50/50 active:bg-white cursor-pointer" onclick="openLead('${l.id}')"><div class="flex items-start justify-between gap-2"><div class="flex gap-2.5"><div class="w-9 h-9 rounded-full bg-ink-900 text-white grid place-items-center text-[11px] font-semibold shrink-0">${l.name.split(' ').map(x=>x[0]).join('').slice(0,2)}</div><div class="min-w-0"><div class="font-medium text-[13px] flex items-center gap-1">${l.name} ${l.source.includes('WhatsApp')?'<span class="w-4 h-4 rounded-full bg-[#25D366] text-white grid place-items-center text-[8px]">W</span>':''}</div><div class="text-[11px] text-ink-400 truncate">${l.enquiryType}</div><div class="text-[11px] text-ink-600 mt-0.5">${l.phone} • ${fmtTime(l.timestamp)}</div></div></div><span class="text-[10px] px-2 py-1 rounded-full border ${statusMeta[l.status].color} shrink-0">${statusMeta[l.status].label.split(' ')[0]}</span></div></div>`).join('')}</div>
     </div>
   </div>`;
 }
+
 function renderEnquiries(){
   const filter = window.enqFilter || 'all';
   const list = filter==='all'? LEADS : LEADS.filter(l=>l.status===filter);
-  return `<div class="max-w-[1280px] mx-auto"><div class="flex flex-wrap gap-2 mb-6">${[{id:'all', label:`All • ${LEADS.length}`},{id:'new', label:`New • ${LEADS.filter(l=>l.status==='new').length}`},{id:'followup', label:`Follow-ups Due`},{id:'contacted', label:`Contacted`},{id:'consultation', label:`Consultation`},{id:'converted', label:`Booked`},{id:'lost', label:`Lost`}].map(f=>`<button onclick="setEnqFilter('${f.id}')" class="h-8 px-3.5 rounded-full border text-[12px] font-medium ${filter===f.id?'bg-ink-900 text-white border-ink-900':'bg-white border-slate-200 text-ink-600 hover:border-slate-300'}">${f.label}</button>`).join('')}</div><div class="grid md:grid-cols-2 xl:grid-cols-3 gap-4">${list.map(l=>`<div class="bg-white rounded-[18px] border border-slate-200 shadow-card p-5 hover:shadow-[0_8px_32px_rgba(15,23,42,0.08)] transition cursor-pointer group" onclick="openLead('${l.id}')"><div class="flex items-start justify-between gap-3"><div class="flex gap-3"><div class="w-10 h-10 rounded-full bg-slate-900 text-white grid place-items-center font-semibold text-[12px]">${l.name.split(' ').map(s=>s[0]).join('').slice(0,2)}</div><div><div class="font-semibold text-[14px] leading-tight flex items-center gap-1">${l.name} ${l.source.includes('WhatsApp')?'<span class="w-5 h-5 rounded-full bg-[#25D366] text-white grid place-items-center text-[10px]">W</span>':''}</div><div class="text-[11px] text-ink-400 mt-0.5">${l.id} • ${fmtTime(l.timestamp)} • DEMO</div></div></div><span class="text-[10px] px-2.5 py-1 rounded-full border font-medium ${statusMeta[l.status].color}">${statusMeta[l.status].label}</span></div><div class="mt-4 space-y-2 text-[12px]"><div class="flex justify-between"><span class="text-ink-400">Enquiry</span><span class="font-medium max-w-[160px] truncate">${l.enquiryType}</span></div><div class="flex justify-between"><span class="text-ink-400">Preferred</span><span class="font-medium flex items-center gap-1"><button onclick="event.stopPropagation(); openCalendar('${l.id}')" class="underline decoration-dashed hover:text-ink-900">${l.preferredDate}</button> 📅</span></div><div class="flex justify-between"><span class="text-ink-400">Phone</span><span class="font-medium">${l.phone}</span></div><div class="flex justify-between"><span class="text-ink-400">Source</span><span class="font-medium">${l.source}</span></div></div><div class="mt-4 flex gap-2"><button class="flex-1 h-8 rounded-full bg-ink-900 text-white text-[12px] font-medium group-hover:bg-black">View Conversation</button><button class="h-8 w-8 grid place-items-center rounded-full border border-slate-200" onclick="event.stopPropagation(); openAssign('${l.id}')">↗</button></div>${l.assignedTo? `<div class="mt-3 text-[11px] text-ink-600 flex items-center gap-1.5"><span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Assigned to ${STAFF.find(s=>s.id===l.assignedTo)?.name}</div>`:''}</div>`).join('')}</div></div>`;
+  return `<div class="max-w-[1280px] mx-auto"><div class="flex gap-2 mb-4 overflow-x-auto scrollbar-hide pb-2 -mx-3 px-3 lg:mx-0 lg:px-0">${[{id:'all', label:`All • ${LEADS.length}`},{id:'new', label:`New • ${LEADS.filter(l=>l.status==='new').length}`},{id:'followup', label:`Follow-up Due`},{id:'contacted', label:`Contacted`},{id:'consultation', label:`Consultation`},{id:'converted', label:`Booked`},{id:'lost', label:`Lost`}].map(f=>`<button onclick="setEnqFilter('${f.id}')" class="h-10 lg:h-8 px-4 rounded-full border text-[13px] lg:text-[12px] font-medium whitespace-nowrap shrink-0 ${filter===f.id?'bg-ink-900 text-white border-ink-900':'bg-white border-slate-200 text-ink-600'}">${f.label}</button>`).join('')}</div><div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3 lg:gap-4">${list.map(l=>`<div class="bg-white rounded-[18px] border border-slate-200 shadow-card p-4 lg:p-5 active:scale-[0.99] transition cursor-pointer" onclick="openLead('${l.id}')"><div class="flex items-start justify-between gap-3"><div class="flex gap-3 min-w-0"><div class="w-10 h-10 rounded-full bg-slate-900 text-white grid place-items-center font-semibold text-[12px] shrink-0">${l.name.split(' ').map(s=>s[0]).join('').slice(0,2)}</div><div class="min-w-0"><div class="font-semibold text-[14px] leading-tight truncate flex items-center gap-1">${l.name} ${l.source.includes('WhatsApp')?'<span class="w-5 h-5 rounded-full bg-[#25D366] text-white grid place-items-center text-[10px]">W</span>':''}</div><div class="text-[11px] text-ink-400 mt-0.5 truncate">${l.id} • ${fmtTime(l.timestamp)}</div></div></div><span class="text-[10px] px-2.5 py-1 rounded-full border font-medium ${statusMeta[l.status].color} shrink-0">${statusMeta[l.status].label.split(' ')[0]}</span></div><div class="mt-4 space-y-2 text-[12px]"><div class="flex justify-between gap-2"><span class="text-ink-400 shrink-0">Enquiry</span><span class="font-medium truncate text-right">${l.enquiryType}</span></div><div class="flex justify-between"><span class="text-ink-400">Preferred</span><span class="font-medium flex items-center gap-1"><button onclick="event.stopPropagation(); openCalendar('${l.id}')" class="underline decoration-dashed">📅 ${l.preferredDate}</button></span></div><div class="flex justify-between"><span class="text-ink-400">Phone</span><span class="font-medium">${l.phone}</span></div></div><div class="mt-4 flex gap-2"><button class="flex-1 h-11 lg:h-8 rounded-full bg-ink-900 text-white text-[13px] lg:text-[12px] font-medium active:bg-black">View Conversation</button><button class="h-11 w-11 lg:h-8 lg:w-8 grid place-items-center rounded-full border border-slate-200 active:bg-slate-50 shrink-0" onclick="event.stopPropagation(); openAssign('${l.id}')">↗</button></div></div>`).join('')}</div></div>`;
 }
+
 function renderConversations(){
   const sel = selectedLeadId ? LEADS.find(l=>l.id===selectedLeadId) : LEADS[0];
   if(!selectedLeadId && LEADS[0]) selectedLeadId=LEADS[0].id;
   const filteredLeads = convFilter==='all' ? LEADS : LEADS.filter(l=> convFilter==='whatsapp'? l.source.includes('WhatsApp') : convFilter==='website'? l.source.includes('Website') : l.source.includes('Phone'));
   const isWhatsApp = sel?.source.includes('WhatsApp');
-  return `<div class="max-w-[1280px] mx-auto grid lg:grid-cols-[340px_1fr] gap-4 h-[calc(100dvh-160px)] min-h-[600px]">
-    <div class="bg-white rounded-[18px] border border-slate-200 shadow-card flex flex-col overflow-hidden">
-      <div class="p-3 border-b border-slate-100"><div class="flex items-center justify-between mb-2"><div class="font-semibold text-[13px]">Conversations • DEMO</div><div class="text-[11px] text-ink-400">${filteredLeads.length} threads</div></div><div class="flex gap-1.5">
-        ${[{id:'all',label:'All'},{id:'website',label:'Website'},{id:'whatsapp',label:'WhatsApp'},{id:'phone',label:'Phone'}].map(f=>`<button onclick="setConvFilter('${f.id}')" class="h-7 px-2.5 rounded-full text-[11px] font-medium border ${convFilter===f.id?'bg-ink-900 text-white border-ink-900':'bg-white border-slate-200 text-ink-600'}">${f.label}</button>`).join('')}
-      </div></div>
-      <div class="flex-1 overflow-auto">${filteredLeads.map(l=>`<div onclick="selectConversation('${l.id}')" class="p-4 border-b border-slate-50 hover:bg-slate-50 cursor-pointer ${selectedLeadId===l.id?'bg-slate-50':''}"><div class="flex items-start justify-between gap-2"><div class="font-medium text-[13px] truncate flex items-center gap-1.5">${l.name} ${l.source.includes('WhatsApp')?'<span class="w-4 h-4 rounded-full bg-[#25D366] text-white grid place-items-center text-[8px]">W</span>':''}</div><div class="text-[10px] text-ink-400 shrink-0">${fmtTime(l.timestamp)}</div></div><div class="text-[11px] text-ink-600 truncate mt-1">${l.conversation[l.conversation.length-1]?.text||''}</div><div class="mt-2 flex items-center gap-2"><span class="text-[10px] px-2 py-0.5 rounded-full border ${statusMeta[l.status].color}">${statusMeta[l.status].label}</span><span class="text-[10px] text-ink-400">${l.source.split(' ')[0]}</span></div></div>`).join('')}</div>
+  const showMobileList = window.innerWidth < 1024 ? (window._convMobileView === 'list' || !window._convMobileView) : true;
+  const showMobileChat = window.innerWidth < 1024 ? window._convMobileView === 'chat' : true;
+  return `<div class="max-w-[1280px] mx-auto grid lg:grid-cols-[340px_1fr] gap-3 lg:gap-4 h-[calc(100dvh-132px)] lg:h-[calc(100dvh-160px)] min-h-[520px]">
+    <div class="bg-white rounded-[18px] border border-slate-200 shadow-card flex flex-col overflow-hidden ${showMobileList ? 'flex' : 'hidden lg:flex'}">
+      <div class="p-3 border-b border-slate-100"><div class="flex items-center justify-between mb-2"><div class="font-semibold text-[13px]">Conversations • DEMO</div><div class="text-[11px] text-ink-400">${filteredLeads.length} threads</div></div><div class="flex gap-1.5 overflow-x-auto pb-1">${[{id:'all',label:'All'},{id:'website',label:'Website'},{id:'whatsapp',label:'WhatsApp'},{id:'phone',label:'Phone'}].map(f=>`<button onclick="setConvFilter('${f.id}')" class="h-9 px-3.5 rounded-full text-[11px] font-medium border whitespace-nowrap ${convFilter===f.id?'bg-ink-900 text-white border-ink-900':'bg-white border-slate-200 text-ink-600'}">${f.label}</button>`).join('')}</div></div>
+      <div class="flex-1 overflow-auto">${filteredLeads.map(l=>`<div onclick="selectConversationMobile('${l.id}')" class="p-4 border-b border-slate-50 active:bg-slate-100 cursor-pointer ${selectedLeadId===l.id?'bg-slate-50':''}"><div class="flex items-start justify-between gap-2"><div class="font-medium text-[13px] truncate flex items-center gap-1.5">${l.name} ${l.source.includes('WhatsApp')?'<span class="w-4 h-4 rounded-full bg-[#25D366] text-white grid place-items-center text-[8px]">W</span>':''}</div><div class="text-[10px] text-ink-400 shrink-0">${fmtTime(l.timestamp)}</div></div><div class="text-[11px] text-ink-600 truncate mt-1">${l.conversation[l.conversation.length-1]?.text||''}</div><div class="mt-2 flex items-center gap-2"><span class="text-[10px] px-2 py-0.5 rounded-full border ${statusMeta[l.status].color}">${statusMeta[l.status].label}</span><span class="text-[10px] text-ink-400">${l.source.split(' ')[0]}</span></div></div>`).join('')}</div>
     </div>
-    <div class="bg-white rounded-[18px] border border-slate-200 shadow-card flex flex-col overflow-hidden">
-      ${sel?`<div class="h-[64px] px-5 flex items-center justify-between border-b border-slate-100 shrink-0 bg-white"><div class="flex items-center gap-3"><div class="w-9 h-9 rounded-full bg-ink-900 text-white grid place-items-center text-[12px] font-semibold">${sel.name.split(' ').map(s=>s[0]).join('').slice(0,2)}</div><div><div class="font-semibold text-[13px] flex items-center gap-2">${sel.name} • ${sel.phone} ${isWhatsApp?'<span class="text-[10px] px-2 py-0.5 rounded-full bg-[#DCF8C6] text-[#075E54] border border-[#25D366]/30">WhatsApp • Demo</span>':''}</div><div class="text-[11px] text-ink-400">${sel.enquiryType} • <button onclick="openCalendar('${sel.id}')" class="underline decoration-dashed">${sel.preferredDate}</button> • ${sel.source}</div></div></div><div class="flex items-center gap-2"><select onchange="changeStatus('${sel.id}', this.value)" class="h-8 px-2.5 rounded-full border border-slate-200 bg-slate-50 text-[11px] font-medium">${Object.entries(statusMeta).map(([k,v])=>`<option value="${k}" ${sel.status===k?'selected':''}>${v.label}</option>`).join('')}</select><button onclick="openAssign('${sel.id}')" class="h-8 px-3 rounded-full bg-ink-900 text-white text-[11px] font-medium">Assign to Staff</button></div></div><div class="flex-1 overflow-auto p-5 space-y-4 ${isWhatsApp?'whatsapp-bg':'bg-[#fcfcfd]'}">
-          ${sel.conversation.map(m=>{
-            const isPatient = m.from==='patient';
-            if(isWhatsApp){
-              return `<div class="flex ${isPatient?'justify-start':'justify-end'}"><div class="max-w-[78%] rounded-[12px] px-3.5 py-2 text-[13px] leading-6 shadow-sm ${isPatient?'bg-white rounded-tl-[2px]':'bg-[#DCF8C6] rounded-tr-[2px]'}">${m.text}<div class="text-[10px] text-ink-400 mt-1 text-right">${fmtTime(m.at)} ${!isPatient?'✓✓':''}</div></div></div>`;
-            } else {
-              return `<div class="flex ${isPatient?'justify-start':'justify-end'}"><div class="max-w-[78%]"><div class="rounded-[16px] px-4 py-2.5 text-[13px] leading-6 ${isPatient?'bg-white border border-slate-200':'bg-ink-900 text-white'}">${m.text}</div><div class="mt-1 text-[10px] text-ink-400 ${isPatient?'':'text-right'}">${isPatient?'Patient':'Vyravo AI • Demo'} • ${fmtTime(m.at)}</div></div></div>`;
-            }
-          }).join('')}
-          <div class="pt-4 border-t border-dashed border-slate-200/70 mt-6"><div class="text-[11px] font-semibold tracking-widest uppercase text-ink-400 mb-3">Follow-up Timeline • Demo Automation</div><div class="space-y-2">${FOLLOWUPS.filter(f=>f.leadId===sel.id).map(f=>`<div class="flex items-center gap-3 text-[12px] p-2.5 rounded-xl border ${f.status==='sent'?'bg-emerald-50 border-emerald-100 text-emerald-800': f.status==='scheduled'?'bg-amber-50 border-amber-100 text-amber-800':'bg-slate-50 border-slate-200 text-ink-600'}"><span class="w-6 h-6 rounded-full grid place-items-center text-[11px] ${f.status==='sent'?'bg-emerald-600 text-white': f.status==='scheduled'?'bg-amber-500 text-white':'bg-slate-300 text-white'}">${f.status==='sent'?'✓': f.status==='scheduled'?'◷':'—'}</span><div class="flex-1"><div class="font-medium">${f.label}</div><div class="text-[11px] opacity-80 truncate">${f.template}</div></div><div class="text-[10px]">${f.status} • ${fmtTime(f.scheduledAt)}</div></div>`).join('')}</div></div>
-          ${sel.notes.length?`<div class="pt-4"><div class="text-[11px] font-semibold tracking-widest uppercase text-ink-400 mb-2">Internal Notes</div><div class="space-y-2">${sel.notes.map(n=>`<div class="p-3 rounded-xl bg-violet-50 border border-violet-100 text-[12px]"><div class="font-medium">${n.by}</div><div class="text-ink-600 mt-1">${n.text}</div></div>`).join('')}</div></div>`:''}
-        </div><div class="p-3 border-t border-slate-100 bg-white flex gap-2"><input id="staffReply" placeholder="Type as staff (demo)..." class="flex-1 h-10 px-4 rounded-full bg-slate-50 border border-slate-200 text-[13px]"><button onclick="sendStaffReply('${sel.id}')" class="h-10 px-5 rounded-full bg-ink-900 text-white text-[12px] font-medium">Send & Assign</button></div>`: `<div class="p-10 text-center text-ink-400">No conversation selected</div>`}
+    <div class="bg-white rounded-[18px] border border-slate-200 shadow-card flex flex-col overflow-hidden ${showMobileChat ? 'flex' : 'hidden lg:flex'}">
+      ${sel?`<div class="h-[56px] lg:h-[64px] px-3 lg:px-5 flex items-center justify-between border-b border-slate-100 shrink-0 bg-white gap-2"><div class="flex items-center gap-2 lg:gap-3 min-w-0"><button onclick="showConvList()" class="lg:hidden w-10 h-10 grid place-items-center rounded-full border border-slate-200 shrink-0 active:bg-slate-50">←</button><div class="w-9 h-9 rounded-full bg-ink-900 text-white grid place-items-center text-[11px] font-semibold shrink-0">${sel.name.split(' ').map(s=>s[0]).join('').slice(0,2)}</div><div class="min-w-0"><div class="font-semibold text-[12px] lg:text-[13px] truncate flex items-center gap-1.5"><span class="truncate">${sel.name}</span> ${isWhatsApp?'<span class="hidden sm:inline-flex text-[10px] px-2 py-0.5 rounded-full bg-[#DCF8C6] text-[#075E54] border border-[#25D366]/30">WA</span>':''}</div><div class="text-[10px] lg:text-[11px] text-ink-400 truncate">${sel.phone}</div></div></div><div class="flex items-center gap-1.5 shrink-0"><select onchange="changeStatus('${sel.id}', this.value)" class="h-10 lg:h-8 px-2.5 rounded-full border border-slate-200 bg-slate-50 text-[11px] font-medium max-w-[100px]"><option value="${sel.status}">${statusMeta[sel.status].label.split(' ')[0]}</option>${Object.entries(statusMeta).map(([k,v])=>`<option value="${k}" ${sel.status===k?'selected':''}>${v.label}</option>`).join('')}</select><button onclick="openAssign('${sel.id}')" class="h-10 w-10 lg:w-auto lg:px-3 rounded-full bg-ink-900 text-white text-[11px] font-medium grid place-items-center active:bg-black"><span class="lg:hidden">↗</span><span class="hidden lg:inline">Assign</span></button></div></div><div class="flex-1 overflow-auto p-3 lg:p-5 space-y-3 ${isWhatsApp?'whatsapp-bg':'bg-[#fcfcfd]'}">${sel.conversation.map(m=>{ const isPatient = m.from==='patient'; if(isWhatsApp){ return `<div class="flex ${isPatient?'justify-start':'justify-end'}"><div class="max-w-[85%] lg:max-w-[78%] rounded-[12px] px-3.5 py-2.5 text-[13px] leading-6 shadow-sm ${isPatient?'bg-white':'bg-[#DCF8C6]'}">${m.text}<div class="text-[10px] text-ink-400 mt-1 text-right">${fmtTime(m.at)} ${!isPatient?'✓✓':''}</div></div></div>`; } else { return `<div class="flex ${isPatient?'justify-start':'justify-end'}"><div class="max-w-[85%] lg:max-w-[78%]"><div class="rounded-[16px] px-3.5 lg:px-4 py-3 text-[13px] leading-6 ${isPatient?'bg-white border border-slate-200':'bg-ink-900 text-white'}">${m.text}</div></div></div>`; } }).join('')}<div class="pt-4 border-t border-dashed border-slate-200/70 mt-4"><div class="text-[11px] font-semibold tracking-widest uppercase text-ink-400 mb-3">Follow-up Timeline</div><div class="space-y-2">${FOLLOWUPS.filter(f=>f.leadId===sel.id).map(f=>`<div class="flex items-center gap-2.5 text-[12px] p-2.5 rounded-xl border ${f.status==='sent'?'bg-emerald-50 border-emerald-100':'bg-amber-50 border-amber-100'}"><span class="w-6 h-6 rounded-full grid place-items-center text-[11px] shrink-0 ${f.status==='sent'?'bg-emerald-600 text-white':'bg-amber-500 text-white'}">${f.status==='sent'?'✓':'◷'}</span><div class="flex-1 min-w-0"><div class="font-medium text-[12px] truncate">${f.label}</div><div class="text-[11px] opacity-80 truncate">${f.template}</div></div></div>`).join('')}</div></div></div><div class="p-3 border-t border-slate-100 bg-white flex gap-2 safe-bottom"><input id="staffReply" placeholder="Type as staff..." class="flex-1 h-12 lg:h-10 px-4 rounded-full bg-slate-50 border border-slate-200 text-[14px] lg:text-[13px]"><button onclick="sendStaffReply('${sel.id}')" class="h-12 w-12 lg:h-10 lg:w-auto lg:px-5 rounded-full bg-ink-900 text-white grid place-items-center shrink-0 active:bg-black"><span class="hidden lg:inline">Send</span><span class="lg:hidden">↗</span></button></div>`: `<div class="p-10 text-center text-ink-400"><div class="text-[14px]">Select a conversation</div><button onclick="showConvList()" class="lg:hidden mt-4 h-11 px-5 rounded-full border border-slate-200">← Back to list</button></div>`}
     </div>
   </div>`;
 }
+
 function renderFollowups(){
   const scheduled = FOLLOWUPS.filter(f=>f.status==='scheduled'), sent = FOLLOWUPS.filter(f=>f.status==='sent'), stopped = FOLLOWUPS.filter(f=>f.status==='stopped');
-  return `<div class="max-w-[1280px] mx-auto space-y-6"><div class="grid lg:grid-cols-3 gap-4"><div class="bg-white rounded-[16px] border border-slate-200 p-5 shadow-card"><div class="text-[11px] tracking-widest uppercase font-semibold text-ink-400">Scheduled</div><div class="mt-2 text-[26px] font-semibold">${scheduled.length}</div><div class="text-[12px] text-ink-600">24h & 3-day nudges • Demo</div></div><div class="bg-white rounded-[16px] border border-slate-200 p-5 shadow-card"><div class="text-[11px] tracking-widest uppercase font-semibold text-ink-400">Sent (Demo)</div><div class="mt-2 text-[26px] font-semibold">${sent.length}</div><div class="text-[12px] text-ink-600">Immediate + follow-ups</div></div><div class="bg-white rounded-[16px] border border-slate-200 p-5 shadow-card"><div class="text-[11px] tracking-widest uppercase font-semibold text-ink-400">Stopped (Handoff)</div><div class="mt-2 text-[26px] font-semibold">${stopped.length}</div><div class="text-[12px] text-ink-600">Paused after assignment</div></div></div><div class="bg-white rounded-[20px] border border-slate-200 shadow-card overflow-hidden"><div class="p-6 border-b border-slate-100 flex items-center justify-between"><div class="font-semibold">Follow-up Queue • DEMO DATA</div><div class="flex gap-2"><button onclick="simulateSendAll()" class="h-8 px-3 rounded-full bg-ink-900 text-white text-[12px]">Simulate Send Due</button></div></div><div class="overflow-auto"><table class="w-full text-left"><thead class="text-[11px] tracking-widest uppercase text-ink-400 border-b border-slate-100"><tr><th class="px-6 py-3">Patient</th><th class="px-6 py-3">Stage</th><th class="px-6 py-3">Message</th><th class="px-6 py-3">Scheduled</th><th class="px-6 py-3">Status</th><th class="px-6 py-3">Action</th></tr></thead><tbody class="text-[13px]">${FOLLOWUPS.slice().sort((a,b)=> new Date(a.scheduledAt)-new Date(b.scheduledAt)).map(f=>{const lead=LEADS.find(l=>l.id===f.leadId); return `<tr class="border-b border-slate-50 hover:bg-slate-50/60"><td class="px-6 py-3"><div class="font-medium flex items-center gap-1">${f.leadName} ${f.source?.includes('WhatsApp')?'<span class="w-4 h-4 rounded-full bg-[#25D366] text-white grid place-items-center text-[8px]">W</span>':''}</div><div class="text-[11px] text-ink-400">${lead?.enquiryType||''}</div></td><td class="px-6 py-3 text-[12px]">${f.label}</td><td class="px-6 py-3 max-w-[360px]"><div class="truncate text-[12px] text-ink-600">${f.template}</div></td><td class="px-6 py-3 text-[12px]">${fmtTime(f.scheduledAt)}</td><td class="px-6 py-3"><span class="text-[11px] px-2.5 py-1 rounded-full border ${f.status==='sent'?'bg-emerald-50 text-emerald-700 border-emerald-200': f.status==='scheduled'?'bg-amber-50 text-amber-700 border-amber-200':'bg-slate-50 text-slate-600 border-slate-200'}">${f.status}</span></td><td class="px-6 py-3">${f.status==='scheduled'?`<button onclick="markFollowSent('${f.id}')" class="h-7 px-3 rounded-full bg-ink-900 text-white text-[11px]">Mark Sent</button>`:`<span class="text-[11px] text-ink-400">—</span>`}</td></tr>`;}).join('')}</tbody></table></div></div></div>`;
+  return `<div class="max-w-[1280px] mx-auto space-y-4"><div class="grid grid-cols-1 sm:grid-cols-3 gap-3"><div class="bg-white rounded-[16px] border border-slate-200 p-4 shadow-card"><div class="text-[11px] tracking-widest uppercase font-semibold text-ink-400">Scheduled</div><div class="mt-2 text-[24px] font-semibold">${scheduled.length}</div><div class="text-[12px] text-ink-600">24h & 3-day nudges</div></div><div class="bg-white rounded-[16px] border border-slate-200 p-4 shadow-card"><div class="text-[11px] tracking-widest uppercase font-semibold text-ink-400">Sent</div><div class="mt-2 text-[24px] font-semibold">${sent.length}</div><div class="text-[12px] text-ink-600">Immediate + follow-ups</div></div><div class="bg-white rounded-[16px] border border-slate-200 p-4 shadow-card"><div class="text-[11px] tracking-widest uppercase font-semibold text-ink-400">Stopped</div><div class="mt-2 text-[24px] font-semibold">${stopped.length}</div><div class="text-[12px] text-ink-600">Paused after handoff</div></div></div>
+  <div class="bg-white rounded-[20px] border border-slate-200 shadow-card overflow-hidden"><div class="p-4 lg:p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3"><div class="font-semibold">Follow-up Queue • DEMO • Mobile Ready</div><button onclick="simulateSendAll()" class="h-11 lg:h-9 px-5 rounded-full bg-ink-900 text-white text-[13px] lg:text-[12px] font-medium active:bg-black w-full sm:w-auto">Simulate Send Due</button></div>
+  <div class="hidden lg:block overflow-auto"><table class="w-full text-left"><thead class="text-[11px] tracking-widest uppercase text-ink-400 border-b border-slate-100"><tr><th class="px-6 py-3">Patient</th><th class="px-6 py-3">Stage</th><th class="px-6 py-3">Message</th><th class="px-6 py-3">Status</th><th class="px-6 py-3">Action</th></tr></thead><tbody class="text-[13px]">${FOLLOWUPS.slice().sort((a,b)=> new Date(a.scheduledAt)-new Date(b.scheduledAt)).slice(0,10).map(f=>`<tr class="border-b border-slate-50"><td class="px-6 py-3"><div class="font-medium">${f.leadName}</div><div class="text-[11px] text-ink-400">${f.label}</div></td><td class="px-6 py-3 text-[12px]">${f.label}</td><td class="px-6 py-3 max-w-[320px]"><div class="truncate text-[12px] text-ink-600">${f.template}</div></td><td class="px-6 py-3"><span class="text-[11px] px-2.5 py-1 rounded-full border ${f.status==='sent'?'bg-emerald-50 text-emerald-700 border-emerald-200': f.status==='scheduled'?'bg-amber-50 text-amber-700 border-amber-200':'bg-slate-50 text-slate-600 border-slate-200'}">${f.status}</span></td><td class="px-6 py-3">${f.status==='scheduled'?`<button onclick="markFollowSent('${f.id}')" class="h-8 px-3 rounded-full bg-ink-900 text-white text-[11px]">Mark Sent</button>`:`—`}</td></tr>`).join('')}</tbody></table></div>
+  <div class="lg:hidden p-3 space-y-3 max-h-[60vh] overflow-auto">${FOLLOWUPS.slice().sort((a,b)=> new Date(a.scheduledAt)-new Date(b.scheduledAt)).slice(0,10).map(f=>`<div class="p-4 rounded-[14px] border ${f.status==='sent'?'bg-emerald-50/60 border-emerald-200': f.status==='scheduled'?'bg-amber-50/60 border-amber-200':'bg-slate-50 border-slate-200'}"><div class="flex items-start justify-between gap-2"><div class="flex gap-2.5"><div class="w-9 h-9 rounded-full grid place-items-center text-[12px] shrink-0 ${f.status==='sent'?'bg-emerald-600 text-white':'bg-amber-500 text-white'}">${f.status==='sent'?'✓':'◷'}</div><div><div class="font-medium text-[13px]">${f.leadName}</div><div class="text-[11px] text-ink-500">${f.label} • ${fmtTime(f.scheduledAt)}</div></div></div><span class="text-[10px] px-2 py-1 rounded-full border bg-white ${f.status==='sent'?'text-emerald-700 border-emerald-200':'text-amber-700 border-amber-200'}">${f.status}</span></div><div class="mt-3 text-[12px] leading-5 text-ink-600">${f.template}</div>${f.status==='scheduled'?`<button onclick="markFollowSent('${f.id}')" class="mt-3 w-full h-11 rounded-full bg-ink-900 text-white text-[13px] font-medium">Mark Sent</button>`:''}</div>`).join('')}</div>
+  </div></div>`;
 }
+
 function renderLeads(){
-  return `<div class="max-w-[1280px] mx-auto bg-white rounded-[20px] border border-slate-200 shadow-card overflow-hidden"><div class="p-6 border-b border-slate-100 flex flex-wrap items-center justify-between gap-3"><div><div class="font-semibold">Leads CRM • DEMO DATA • v2</div><div class="text-[12px] text-ink-400 mt-1">Editable status, assignment, notes, calendar. All synthetic.</div></div><div class="flex gap-2"><input id="leadSearch" placeholder="Search name, phone, enquiry..." class="h-9 w-[260px] px-4 rounded-full bg-slate-50 border border-slate-200 text-[12px]" oninput="renderLeadsFiltered()"><button onclick="exportLeads()" class="h-9 px-4 rounded-full border border-slate-200 text-[12px] font-medium">Export CSV</button></div></div><div class="overflow-auto"><table class="w-full text-left"><thead class="text-[11px] tracking-widest uppercase text-ink-400 border-b border-slate-100"><tr><th class="px-6 py-3">Lead</th><th class="px-6 py-3">Contact</th><th class="px-6 py-3">Enquiry</th><th class="px-6 py-3">Preferred 📅</th><th class="px-6 py-3">Status</th><th class="px-6 py-3">Assigned</th><th class="px-6 py-3">Follow-ups</th><th class="px-6 py-3">Action</th></tr></thead><tbody id="leadsTbody" class="text-[13px]">${LEADS.map(l=>`<tr class="border-b border-slate-50 hover:bg-slate-50/70"><td class="px-6 py-3"><div class="font-medium flex items-center gap-1">${l.name} ${l.source.includes('WhatsApp')?'<span class="w-4 h-4 rounded-full bg-[#25D366] text-white grid place-items-center text-[8px]">W</span>':''}</div><div class="text-[11px] text-ink-400">${l.id} • ${fmtTime(l.timestamp)}</div></td><td class="px-6 py-3"><div class="text-[12px]">${l.phone}</div><div class="text-[11px] text-ink-400">${l.email||'No email'}</div></td><td class="px-6 py-3 text-[12px] max-w-[180px] truncate">${l.enquiryType}</td><td class="px-6 py-3 text-[12px]"><button onclick="openCalendar('${l.id}')" class="underline decoration-dashed">${l.preferredDate}</button></td><td class="px-6 py-3"><select onchange="changeStatus('${l.id}', this.value)" class="h-7 px-2 rounded-full border text-[11px] font-medium bg-white">${Object.entries(statusMeta).map(([k,v])=>`<option value="${k}" ${l.status===k?'selected':''}>${v.label}</option>`).join('')}</select></td><td class="px-6 py-3 text-[12px]">${l.assignedTo? STAFF.find(s=>s.id===l.assignedTo)?.name : '<span class="text-ink-400">Unassigned</span>'}</td><td class="px-6 py-3 text-[11px]">${FOLLOWUPS.filter(f=>f.leadId===l.id && f.status==='sent').length} sent / ${FOLLOWUPS.filter(f=>f.leadId===l.id).length}</td><td class="px-6 py-3 flex gap-1.5"><button onclick="openLead('${l.id}')" class="h-7 px-2.5 rounded-full bg-ink-900 text-white text-[11px]">Open</button><button onclick="openAssign('${l.id}')" class="h-7 w-7 grid place-items-center rounded-full border border-slate-200 text-[11px]">↗</button></td></tr>`).join('')}</tbody></table></div></div>`;
+  return `<div class="max-w-[1280px] mx-auto space-y-4">
+  <div class="bg-white rounded-[20px] border border-slate-200 shadow-card p-4 lg:p-6 flex flex-col sm:flex-row gap-3 justify-between"><div><div class="font-semibold text-[14px] lg:text-[15px]">Leads CRM • DEMO • Mobile Optimized</div><div class="text-[11px] lg:text-[12px] text-ink-400 mt-1">Search, status, assign, calendar — all touch-friendly</div></div><div class="flex gap-2"><input id="leadSearch" placeholder="Search..." class="flex-1 sm:w-[220px] h-11 lg:h-9 px-4 rounded-full bg-slate-50 border border-slate-200 text-[13px] lg:text-[12px]" oninput="renderLeadsFiltered()"><button onclick="exportLeads()" class="h-11 lg:h-9 px-4 rounded-full border border-slate-200 text-[12px] font-medium active:bg-slate-50 shrink-0">Export</button></div></div>
+  <div class="hidden lg:block bg-white rounded-[20px] border border-slate-200 shadow-card overflow-hidden"><div class="overflow-auto"><table class="w-full text-left"><thead class="text-[11px] tracking-widest uppercase text-ink-400 border-b border-slate-100"><tr><th class="px-6 py-3">Lead</th><th class="px-6 py-3">Contact</th><th class="px-6 py-3">Enquiry</th><th class="px-6 py-3">Preferred 📅</th><th class="px-6 py-3">Status</th><th class="px-6 py-3">Action</th></tr></thead><tbody id="leadsTbody" class="text-[13px]">${LEADS.map(l=>`<tr class="border-b border-slate-50 hover:bg-slate-50/70"><td class="px-6 py-3"><div class="font-medium flex items-center gap-1">${l.name} ${l.source.includes('WhatsApp')?'<span class="w-4 h-4 rounded-full bg-[#25D366] text-white grid place-items-center text-[8px]">W</span>':''}</div><div class="text-[11px] text-ink-400">${l.id} • ${fmtTime(l.timestamp)}</div></td><td class="px-6 py-3"><div class="text-[12px]">${l.phone}</div></td><td class="px-6 py-3 text-[12px] max-w-[160px] truncate">${l.enquiryType}</td><td class="px-6 py-3 text-[12px]"><button onclick="openCalendar('${l.id}')" class="underline decoration-dashed">📅 ${l.preferredDate}</button></td><td class="px-6 py-3"><select onchange="changeStatus('${l.id}', this.value)" class="h-8 px-2 rounded-full border text-[11px] font-medium bg-white">${Object.entries(statusMeta).map(([k,v])=>`<option value="${k}" ${l.status===k?'selected':''}>${v.label}</option>`).join('')}</select></td><td class="px-6 py-3 flex gap-1.5"><button onclick="openLead('${l.id}')" class="h-8 px-3 rounded-full bg-ink-900 text-white text-[11px]">Open</button></td></tr>`).join('')}</tbody></table></div></div>
+  <div class="lg:hidden grid grid-cols-1 gap-3" id="leadsMobileCards">${LEADS.map(l=>`<div class="bg-white rounded-[18px] border border-slate-200 shadow-card p-4 active:scale-[0.99] transition"><div class="flex items-start justify-between gap-3"><div class="flex gap-3"><div class="w-10 h-10 rounded-full bg-ink-900 text-white grid place-items-center text-[12px] font-semibold">${l.name.split(' ').map(s=>s[0]).join('').slice(0,2)}</div><div><div class="font-semibold text-[14px] flex items-center gap-1">${l.name} ${l.source.includes('WhatsApp')?'<span class="w-5 h-5 rounded-full bg-[#25D366] text-white grid place-items-center text-[10px]">W</span>':''}</div><div class="text-[11px] text-ink-400">${l.phone} • ${fmtTime(l.timestamp)}</div><div class="text-[11px] text-ink-600 mt-1">${l.enquiryType}</div></div></div><span class="text-[10px] px-2.5 py-1 rounded-full border ${statusMeta[l.status].color}">${statusMeta[l.status].label.split(' ')[0]}</span></div><div class="mt-3 flex gap-2"><button onclick="openLead('${l.id}')" class="flex-1 h-11 rounded-full bg-ink-900 text-white text-[13px] font-medium active:bg-black">Open Details</button><button onclick="openCalendar('${l.id}')" class="h-11 w-11 grid place-items-center rounded-full border border-slate-200 active:bg-slate-50">📅</button><button onclick="openAssign('${l.id}')" class="h-11 w-11 grid place-items-center rounded-full border border-slate-200 active:bg-slate-50">↗</button></div></div>`).join('')}</div>
+  </div>`;
 }
+
 function renderAnalytics(){
   const a=calcAnalytics();
   const last7 = Array.from({length:7}).map((_,i)=>{ const d=new Date(); d.setDate(d.getDate()-(6-i)); const count = LEADS.filter(l=> new Date(l.timestamp).toDateString()===d.toDateString()).length + (i===6?1:0) + Math.floor(Math.random()*1); return {label:d.toLocaleDateString('en-IN',{weekday:'short'}), full:d.toLocaleDateString('en-IN',{day:'2-digit',month:'short'}), count}; });
   const max = Math.max(...last7.map(x=>x.count),1);
-  const points = last7.map((d,i)=> `${(i* (100/(last7.length-1)))}% ${100 - (d.count/max*80)}%`).join(', ');
-  return `<div class="max-w-[1280px] mx-auto space-y-6"><div class="grid grid-cols-2 lg:grid-cols-3 gap-4">${[{k:'Total Enquiries', v:a.total, hint:'All channels • Demo'},{k:'Response Rate', v:a.responseRate+'%', hint:'AI <2s • EN/हि • 24/7'},{k:'Follow-ups Completed', v:a.followSent, hint:`${FOLLOWUPS.filter(f=>f.status==='scheduled').length} pending`},{k:'Consultations Requested', v:a.consultations, hint:'Qualified intent'},{k:'Conversion Rate', v:a.conversionRate+'%', hint:`${a.converted} booked`},{k:'Needs Human Attention', v:a.attention, hint:'New + follow-up due'}].map(c=>`<div class="bg-white rounded-[18px] border border-slate-200 p-5 shadow-card"><div class="text-[11px] tracking-widest uppercase font-semibold text-ink-400">${c.k}</div><div class="mt-2 text-[28px] font-semibold tracking-tight">${c.v}</div><div class="text-[12px] text-ink-600 mt-1">${c.hint}</div></div>`).join('')}</div><div class="grid lg:grid-cols-[1.2fr_0.8fr] gap-6"><div class="bg-white rounded-[20px] border border-slate-200 shadow-card p-6"><div class="flex items-center justify-between"><div class="font-semibold">Enquiries Last 7 Days • DEMO • Enhanced Chart</div><div class="text-[11px] px-2 py-1 rounded-full bg-slate-50 border border-slate-200">Synthetic • SVG</div></div><div class="mt-6 relative h-[200px]"><svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none"><polyline fill="none" stroke="#0f172a" stroke-width="2" points="${last7.map((d,i)=> `${i*(100/(last7.length-1))},${100 - (d.count/max*80)}`).join(' ')}" stroke-linecap="round" stroke-linejoin="round"/><polyline fill="rgba(15,23,42,0.06)" stroke="none" points="${last7.map((d,i)=> `${i*(100/(last7.length-1))},${100 - (d.count/max*80)}`).join(' ')} 100,100 0,100" /></svg><div class="absolute inset-0 flex items-end justify-between gap-2 px-1">${last7.map(d=>`<div class="flex-1 flex flex-col items-center gap-2 justify-end h-full"><div class="w-full flex justify-center"><div class="w-2.5 h-2.5 rounded-full bg-ink-900 border-2 border-white shadow"></div></div><div class="text-[11px] font-medium text-ink-600">${d.label}</div><div class="text-[10px] text-ink-400">${d.full}</div><div class="text-[11px] font-semibold">${d.count}</div></div>`).join('')}</div></div></div><div class="bg-white rounded-[20px] border border-slate-200 shadow-card p-6"><div class="font-semibold">Lead Status Breakdown</div><div class="mt-5 space-y-3">${Object.entries(statusMeta).map(([k,v])=>{ const count=LEADS.filter(l=>l.status===k).length; const pct= LEADS.length? Math.round(count/LEADS.length*100):0; return `<div><div class="flex justify-between text-[12px]"><span class="font-medium">${v.label}</span><span class="text-ink-400">${count} • ${pct}%</span></div><div class="mt-1.5 h-2 rounded-full bg-slate-100 overflow-hidden"><div class="h-full bg-ink-900 rounded-full transition-all duration-700" style="width:${pct}%"></div></div></div>`;}).join('')}</div><div class="mt-6 p-3.5 rounded-xl bg-teal-50 border border-teal-100 text-[12px] leading-5 text-teal-900"><b>Insight (Demo v2):</b> 2 new enquiries in last hour responded instantly in EN + हि. 3 follow-ups due today. WhatsApp accounts for 25% of enquiries — green bubbles shown in Conversations → WhatsApp filter.</div></div></div><div class="bg-white rounded-[20px] border border-slate-200 shadow-card p-6"><div class="font-semibold">Enquiries by Channel • DEMO v2</div><div class="mt-4 grid sm:grid-cols-3 gap-3 text-[12px]">${[{s:'Website Chat', c:LEADS.filter(l=>l.source.includes('Website')).length, icon:'◩', color:'bg-slate-900 text-white'},{s:'WhatsApp (Demo)', c:LEADS.filter(l=>l.source.includes('WhatsApp')).length, icon:'W', color:'bg-[#25D366] text-white'},{s:'Phone (Logged)', c:LEADS.filter(l=>l.source.includes('Phone')).length, icon:'☎', color:'bg-white border border-slate-200'}].map(x=>`<div class="p-3 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between"><div class="flex items-center gap-2"><span class="w-7 h-7 rounded-full grid place-items-center text-[11px] font-bold ${x.color}">${x.icon}</span><span class="font-medium">${x.s}</span></div><span class="font-semibold">${x.c}</span></div>`).join('')}</div></div></div>`;
+  return `<div class="max-w-[1280px] mx-auto space-y-4"><div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"><div class="bg-white rounded-[16px] border border-slate-200 p-4 shadow-card"><div class="text-[11px] tracking-widest uppercase font-semibold text-ink-400">Total Enquiries</div><div class="mt-2 text-[26px] font-semibold">${a.total}</div><div class="text-[12px] text-ink-600">All channels • Demo</div></div><div class="bg-white rounded-[16px] border border-slate-200 p-4 shadow-card"><div class="text-[11px] tracking-widest uppercase font-semibold text-ink-400">Response Rate</div><div class="mt-2 text-[26px] font-semibold">${a.responseRate}%</div><div class="text-[12px] text-ink-600">AI &lt;2s • EN/हि</div></div><div class="bg-white rounded-[16px] border border-slate-200 p-4 shadow-card"><div class="text-[11px] tracking-widest uppercase font-semibold text-ink-400">Conversion</div><div class="mt-2 text-[26px] font-semibold">${a.conversionRate}%</div><div class="text-[12px] text-ink-600">${a.converted} booked</div></div></div>
+  <div class="bg-white rounded-[20px] border border-slate-200 shadow-card p-4 lg:p-6"><div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2"><div class="font-semibold text-[14px]">Enquiries Last 7 Days • Mobile Chart</div><div class="text-[11px] px-2.5 py-1 rounded-full bg-slate-50 border border-slate-200 w-fit">Synthetic • SVG</div></div><div class="mt-6 relative h-[180px] lg:h-[200px]"><svg class="absolute inset-0 w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none"><polyline fill="none" stroke="#0f172a" stroke-width="2.5" points="${last7.map((d,i)=> `${i*(100/(last7.length-1))},${100 - (d.count/max*80)}`).join(' ')}" stroke-linecap="round" stroke-linejoin="round"/><polyline fill="rgba(15,23,42,0.06)" stroke="none" points="${last7.map((d,i)=> `${i*(100/(last7.length-1))},${100 - (d.count/max*80)}`).join(' ')} 100,100 0,100" /></svg><div class="absolute inset-0 flex items-end justify-between gap-1 lg:gap-2 px-1">${last7.map(d=>`<div class="flex-1 flex flex-col items-center gap-1.5 justify-end h-full"><div class="w-2.5 h-2.5 rounded-full bg-ink-900 border-2 border-white shadow"></div><div class="text-[10px] lg:text-[11px] font-medium">${d.label}</div><div class="text-[10px] text-ink-400 hidden lg:block">${d.full}</div><div class="text-[11px] font-bold">${d.count}</div></div>`).join('')}</div></div></div>
+  <div class="grid lg:grid-cols-2 gap-4"><div class="bg-white rounded-[20px] border border-slate-200 shadow-card p-4 lg:p-6"><div class="font-semibold text-[14px]">Status Breakdown</div><div class="mt-4 space-y-3">${Object.entries(statusMeta).map(([k,v])=>{ const count=LEADS.filter(l=>l.status===k).length; const pct= LEADS.length? Math.round(count/LEADS.length*100):0; return `<div><div class="flex justify-between text-[12px]"><span class="font-medium">${v.label}</span><span class="text-ink-400">${count} • ${pct}%</span></div><div class="mt-1.5 h-2.5 rounded-full bg-slate-100 overflow-hidden"><div class="h-full bg-ink-900 rounded-full" style="width:${pct}%"></div></div></div>`;}).join('')}</div></div><div class="bg-white rounded-[20px] border border-slate-200 shadow-card p-4 lg:p-6"><div class="font-semibold text-[14px]">By Channel • Mobile</div><div class="mt-4 space-y-2.5">${[{s:'Website Chat', c:LEADS.filter(l=>l.source.includes('Website')).length, icon:'◩', color:'bg-slate-900 text-white'},{s:'WhatsApp (Demo)', c:LEADS.filter(l=>l.source.includes('WhatsApp')).length, icon:'W', color:'bg-[#25D366] text-white'},{s:'Phone (Logged)', c:LEADS.filter(l=>l.source.includes('Phone')).length, icon:'☎', color:'bg-white border border-slate-200'}].map(x=>`<div class="p-3.5 rounded-xl border border-slate-200 bg-slate-50 flex items-center justify-between"><div class="flex items-center gap-2.5"><span class="w-8 h-8 rounded-full grid place-items-center text-[12px] font-bold ${x.color}">${x.icon}</span><span class="font-medium text-[13px]">${x.s}</span></div><span class="font-bold text-[14px]">${x.c}</span></div>`).join('')}</div></div></div>
+  </div>`;
 }
+
 function renderSettings(){
-  return `<div class="max-w-[960px] mx-auto space-y-6"><div class="bg-white rounded-[20px] border border-slate-200 shadow-card p-6"><div class="flex items-center justify-between"><div class="font-semibold text-[16px]">Demo Configuration • v2.0 • Not Production</div><span class="text-[11px] px-2 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200">DEMO • No real integrations</span></div><div class="text-[12px] text-ink-600 mt-1">This demo is not connected to any hospital system, WhatsApp API, CRM, or medical records. All integrations are mocked for sales demonstration.</div><div class="mt-6 grid sm:grid-cols-2 gap-6 text-[13px]"><div><div class="text-[11px] font-semibold tracking-widest uppercase text-ink-400">Client</div><div class="mt-2 font-medium">Dr. Sanjay Sonar Laparoscopy and Scopy Center</div><div class="text-[12px] text-ink-600 mt-1">Pune, Maharashtra • Demo account • v2 Enhanced</div><div class="mt-4 text-[11px] font-semibold tracking-widest uppercase text-ink-400">v2 New Features</div><ul class="mt-2 space-y-1 text-[12px] text-ink-600 list-disc pl-4"><li>Guided tour with spotlight overlay</li><li>Notification center (bell) with live updates</li><li>WhatsApp (Demo) channel with green bubbles</li><li>Hindi toggle in patient chat (EN/हि)</li><li>Calendar booking mock modal</li><li>Enhanced SVG analytics chart</li></ul></div><div><div class="text-[11px] font-semibold tracking-widest uppercase text-ink-400">AI Behavior (Demo)</div><ul class="mt-2 space-y-1.5 text-[12px] text-ink-600 list-disc pl-4"><li>Instant reply &lt; 2 seconds • EN + Hindi</li><li>Collects name, phone, preferred date/time</li><li>No medical diagnosis / treatment advice</li><li>Emergency keywords → escalation notice</li><li>Stops automation after human handoff</li><li>WhatsApp style preserved for demo channel</li></ul></div></div></div><div class="grid sm:grid-cols-2 gap-6"><div class="bg-white rounded-[20px] border border-slate-200 shadow-card p-6"><div class="font-semibold text-[14px]">Staff (Demo)</div><div class="mt-4 space-y-3">${STAFF.map(s=>`<div class="flex items-center gap-3 p-2.5 rounded-xl border border-slate-100"><img src="${s.avatar}" class="w-8 h-8 rounded-full"><div><div class="text-[13px] font-medium">${s.name}</div><div class="text-[11px] text-ink-400">${s.role}</div></div><div class="ml-auto w-2 h-2 rounded-full bg-emerald-500"></div></div>`).join('')}</div></div><div class="bg-white rounded-[20px] border border-slate-200 shadow-card p-6"><div class="font-semibold text-[14px]">Channels (Mocked) • v2</div><div class="mt-4 space-y-2.5 text-[12px]"><div class="flex justify-between p-3 rounded-xl bg-slate-50 border border-slate-200"><span class="flex items-center gap-2"><span class="w-5 h-5 rounded-full bg-ink-900 text-white grid place-items-center text-[10px]">W</span> Website Chat Widget</span><span class="text-emerald-700 font-medium">● Active • EN/हि</span></div><div class="flex justify-between p-3 rounded-xl bg-[#DCF8C6]/50 border border-[#25D366]/30"><span class="flex items-center gap-2"><span class="w-5 h-5 rounded-full bg-[#25D366] text-white grid place-items-center text-[10px]">W</span> WhatsApp Business (Demo View)</span><span class="text-[#075E54] font-medium">● Styled • Demo</span></div><div class="flex justify-between p-3 rounded-xl bg-slate-50 border border-slate-200"><span>Phone Logging</span><span class="text-ink-400">Manual • Demo</span></div><div class="flex justify-between p-3 rounded-xl bg-slate-50 border border-slate-200"><span>Calendar / HIS Integration</span><span class="text-ink-400">Mock • v2</span></div></div><div class="mt-5 p-3 rounded-xl bg-amber-50 border border-amber-200 text-[11px] leading-5 text-amber-900">For sales: “Every enquiry gets an immediate response — in English or Hindi. Every qualified lead is captured. Every follow-up is tracked. Your team knows what needs attention via notifications.”</div></div></div><div class="bg-ink-900 text-white rounded-[20px] p-6 flex flex-wrap gap-6 items-center justify-between"><div><div class="font-display text-[18px]">Vyravo AI • Intelligent Automation for Modern Businesses • v2.0</div><div class="text-[12px] text-white/60 mt-1">Demo build • ${new Date().toLocaleDateString('en-IN')} • Pune • All data synthetic • No real patient info • Enhanced with tour, notifications, WhatsApp, Hindi, calendar</div></div><button onclick="resetDemo()" class="h-9 px-4 rounded-full bg-white text-ink-900 text-[12px] font-medium">Reset Demo Data</button></div></div>`;
+  return `<div class="max-w-[960px] mx-auto space-y-4"><div class="bg-white rounded-[20px] border border-slate-200 shadow-card p-5 lg:p-6"><div class="font-semibold text-[15px] lg:text-[16px]">Demo Configuration • v2.2 Mobile Optimized</div><div class="text-[12px] text-ink-600 mt-1 leading-5">Not connected to real systems. Optimized for mobile, tablet, desktop with bottom nav, bottom sheets, cards.</div><div class="mt-5 grid sm:grid-cols-2 gap-4 text-[13px]"><div class="p-3 rounded-xl bg-slate-50 border border-slate-200"><div class="text-[11px] font-semibold tracking-widest uppercase text-ink-400">Client</div><div class="mt-2 font-medium">Dr. Sanjay Sonar Laparoscopy and Scopy Center</div><div class="text-[12px] text-ink-600 mt-1">Pune • Demo • v2.2 Mobile</div></div><div class="p-3 rounded-xl bg-slate-50 border border-slate-200"><div class="text-[11px] font-semibold tracking-widest uppercase text-ink-400">Mobile Optimizations</div><ul class="mt-2 space-y-1 text-[12px] text-ink-600 list-disc pl-4"><li>Bottom nav on mobile</li><li>Bottom sheets for modals</li><li>Cards instead of tables</li><li>44px+ touch targets</li><li>Chat as bottom sheet</li><li>Safe-area insets</li></ul></div></div></div><div class="bg-ink-900 text-white rounded-[20px] p-5 lg:p-6 flex flex-col sm:flex-row gap-4 justify-between"><div><div class="font-display text-[16px] lg:text-[18px]">Vyravo AI • v2.2 Mobile Optimized</div><div class="text-[11px] lg:text-[12px] text-white/60 mt-1">${new Date().toLocaleDateString('en-IN')} • Pune • Synthetic data • Mobile + Tablet + Desktop</div></div><button onclick="resetDemo()" class="h-11 lg:h-9 px-5 rounded-full bg-white text-ink-900 text-[13px] font-medium active:bg-slate-100">Reset Demo</button></div></div>`;
 }
+
 function renderNotifs(){
   const list=document.getElementById('notifList');
   if(!list) return;
-  list.innerHTML = NOTIFICATIONS.slice().sort((a,b)=> new Date(b.at)-new Date(a.at)).map(n=>`<div class="p-3.5 hover:bg-slate-50 flex gap-3 cursor-pointer ${!n.read?'bg-blue-50/50':''}" onclick="markNotifRead('${n.id}')"><div class="w-8 h-8 rounded-full grid place-items-center text-[12px] shrink-0 ${n.type==='new'?'bg-blue-100 text-blue-700': n.type==='followup'?'bg-amber-100 text-amber-700':'bg-violet-100 text-violet-700'}">${n.type==='new'?'◩': n.type==='followup'?'◪':'◎'}</div><div class="min-w-0 flex-1"><div class="text-[13px] font-medium leading-tight">${n.title}</div><div class="text-[11px] text-ink-600 mt-1 leading-snug">${n.desc}</div><div class="text-[10px] text-ink-400 mt-1">${fmtTime(n.at)} • ${n.read?'Read':'New'}</div></div>${!n.read?'<span class="w-2 h-2 rounded-full bg-blue-600 mt-1.5 shrink-0"></span>':''}</div>`).join('') || '<div class="p-8 text-center text-[12px] text-ink-400">No notifications • Demo</div>';
+  list.innerHTML = NOTIFICATIONS.slice().sort((a,b)=> new Date(b.at)-new Date(a.at)).map(n=>`<div class="p-4 hover:bg-slate-50 active:bg-slate-100 flex gap-3 cursor-pointer ${!n.read?'bg-blue-50/50':''}" onclick="markNotifRead('${n.id}')"><div class="w-9 h-9 rounded-full grid place-items-center text-[12px] shrink-0 ${n.type==='new'?'bg-blue-100 text-blue-700': n.type==='followup'?'bg-amber-100 text-amber-700':'bg-violet-100 text-violet-700'}">${n.type==='new'?'◩': n.type==='followup'?'◪':'◎'}</div><div class="min-w-0 flex-1"><div class="text-[13px] font-medium leading-tight">${n.title}</div><div class="text-[11px] text-ink-600 mt-1 leading-snug">${n.desc}</div><div class="text-[10px] text-ink-400 mt-1">${fmtTime(n.at)}</div></div>${!n.read?'<span class="w-2 h-2 rounded-full bg-blue-600 mt-2 shrink-0"></span>':''}</div>`).join('') || '<div class="p-8 text-center text-[12px] text-ink-400">No notifications</div>';
 }
 
-/* Interactions */
 function navigate(id){
-  // Close tour if open when navigating
   const tourOverlay=document.getElementById('tourOverlay');
   if(tourOverlay && !tourOverlay.classList.contains('hidden')){ endTour(); }
   currentNav=id;
-  document.querySelectorAll('.nav-btn').forEach(b=>{ const is=b.dataset.nav===id; b.className = `nav-btn w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13.5px] font-medium ${is?'bg-ink-900 text-white':'text-ink-600 hover:bg-slate-50'}`; });
+  document.querySelectorAll('.nav-btn').forEach(b=>{ const is=b.dataset.nav===id; b.className = `nav-btn w-full flex items-center gap-3 px-3 py-3 lg:py-2.5 rounded-xl text-[14px] lg:text-[13.5px] font-medium ${is?'bg-ink-900 text-white':'text-ink-600 hover:bg-slate-50'}`; });
+  document.querySelectorAll('.mnav-btn').forEach(b=>{ const is=b.dataset.mnav===id; b.className = `mnav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl min-w-[56px] ${is?'bg-ink-900 text-white':'text-ink-400'}`; });
   document.getElementById('pageTitle').textContent = id==='enquiries'?'Patient Enquiries': id==='followups'?'Follow-ups': id.charAt(0).toUpperCase()+id.slice(1);
-  if(window.innerWidth < 1024) document.getElementById('sidebar').classList.add('-translate-x-full');
+  if(window.innerWidth < 1024){
+    document.getElementById('sidebar').classList.add('-translate-x-full');
+    document.getElementById('sidebarBackdrop').classList.add('hidden');
+  }
+  if(id!=='conversations') window._convMobileView=null;
   render(); window.scrollTo(0,0);
 }
 function setEnqFilter(f){ window.enqFilter=f; render(); }
-function setConvFilter(f){ convFilter=f; render(); }
+function setConvFilter(f){ convFilter=f; if(window.innerWidth < 1024) window._convMobileView='list'; render(); }
 function openLead(id){
   selectedLeadId=id;
   const lead=LEADS.find(l=>l.id===id); if(!lead) return;
-  document.getElementById('drawerContent').innerHTML = `<div class="space-y-6"><div class="flex items-start justify-between gap-3"><div class="flex gap-3"><div class="w-11 h-11 rounded-full bg-ink-900 text-white grid place-items-center font-semibold">${lead.name.split(' ').map(s=>s[0]).join('').slice(0,2)}</div><div><div class="font-semibold flex items-center gap-2">${lead.name} ${lead.source.includes('WhatsApp')?'<span class="text-[10px] px-2 py-0.5 rounded-full bg-[#DCF8C6] text-[#075E54] border border-[#25D366]/30">WhatsApp • Demo</span>':''}</div><div class="text-[12px] text-ink-400">${lead.id} • DEMO • ${fmtTime(lead.timestamp)}</div><div class="mt-1.5 inline-flex text-[11px] px-2.5 py-1 rounded-full border ${statusMeta[lead.status].color}">${statusMeta[lead.status].label}</div></div></div><button onclick="openAssign('${lead.id}')" class="h-8 px-3 rounded-full bg-ink-900 text-white text-[11px] font-medium">Assign</button></div><div class="grid grid-cols-2 gap-3 text-[12px]"><div class="p-3 rounded-xl bg-slate-50 border border-slate-200"><div class="text-[11px] tracking-widest uppercase text-ink-400 font-semibold">Phone</div><div class="font-medium mt-1">${lead.phone}</div></div><div class="p-3 rounded-xl bg-slate-50 border border-slate-200"><div class="text-[11px] tracking-widest uppercase text-ink-400 font-semibold">Email</div><div class="font-medium mt-1">${lead.email||'—'}</div></div><div class="p-3 rounded-xl bg-slate-50 border border-slate-200"><div class="text-[11px] tracking-widest uppercase text-ink-400 font-semibold">Enquiry Type</div><div class="font-medium mt-1">${lead.enquiryType}</div></div><div class="p-3 rounded-xl bg-slate-50 border border-slate-200"><div class="text-[11px] tracking-widest uppercase text-ink-400 font-semibold">Preferred 📅</div><div class="font-medium mt-1 flex items-center gap-2"><button onclick="openCalendar('${lead.id}')" class="underline decoration-dashed">${lead.preferredDate}</button></div></div><div class="p-3 rounded-xl bg-slate-50 border border-slate-200"><div class="text-[11px] tracking-widest uppercase text-ink-400 font-semibold">Source</div><div class="font-medium mt-1">${lead.source}</div></div><div class="p-3 rounded-xl bg-slate-50 border border-slate-200"><div class="text-[11px] tracking-widest uppercase text-ink-400 font-semibold">Assigned To</div><div class="font-medium mt-1">${lead.assignedTo? STAFF.find(s=>s.id===lead.assignedTo).name : 'Unassigned'}</div></div></div><div><div class="text-[11px] font-semibold tracking-widest uppercase text-ink-400">Status</div><select onchange="changeStatus('${lead.id}', this.value); openLead('${lead.id}'); render();" class="mt-2 w-full h-11 px-3 rounded-xl border border-slate-200 bg-white text-[13px]">${Object.entries(statusMeta).map(([k,v])=>`<option value="${k}" ${lead.status===k?'selected':''}>${v.label}</option>`).join('')}</select></div><div><div class="text-[11px] font-semibold tracking-widest uppercase text-ink-400">Conversation ${lead.source.includes('WhatsApp')?'<span class="text-[10px] normal-case tracking-normal bg-[#DCF8C6] px-2 py-0.5 rounded-full border border-[#25D366]/20">WhatsApp Style</span>':''}</div><div class="mt-3 space-y-3 max-h-[260px] overflow-auto p-3 rounded-xl ${lead.source.includes('WhatsApp')?'whatsapp-bg':'bg-[#fcfcfd]'} border border-slate-100">${lead.conversation.map(m=>{ const isP=m.from==='patient'; if(lead.source.includes('WhatsApp')){ return `<div class="flex ${isP?'justify-start':'justify-end'}"><div class="max-w-[80%] rounded-[12px] px-3 py-2 text-[12px] leading-5 shadow-sm ${isP?'bg-white':'bg-[#DCF8C6]'}">${m.text}</div></div>`; } else { return `<div class="flex ${isP?'justify-start':'justify-end'}"><div class="max-w-[80%] rounded-[14px] px-3 py-2 text-[12px] leading-5 ${isP?'bg-white border border-slate-200':'bg-ink-900 text-white'}">${m.text}</div></div>`; } }).join('')}</div></div><div><div class="text-[11px] font-semibold tracking-widest uppercase text-ink-400">Follow-up Timeline</div><div class="mt-3 space-y-2">${FOLLOWUPS.filter(f=>f.leadId===lead.id).map(f=>`<div class="flex gap-2.5 p-2.5 rounded-xl border text-[12px] ${f.status==='sent'?'bg-emerald-50 border-emerald-100':'bg-amber-50 border-amber-100'}"><div class="w-6 h-6 rounded-full grid place-items-center text-[10px] ${f.status==='sent'?'bg-emerald-600 text-white':'bg-amber-500 text-white'}">${f.status==='sent'?'✓':'◷'}</div><div class="flex-1"><div class="font-medium">${f.label} • ${f.status}</div><div class="text-[11px] text-ink-600 mt-0.5">${f.template}</div></div></div>`).join('')}</div></div><div class="flex gap-2"><button onclick="closeDrawerFunc(); navigate('conversations'); selectConversation('${lead.id}')" class="flex-1 h-10 rounded-full border border-slate-200 text-[13px] font-medium">Open in Conversations</button><button onclick="closeDrawerFunc(); openAssign('${lead.id}')" class="flex-1 h-10 rounded-full bg-ink-900 text-white text-[13px] font-medium">Human Handoff</button></div><div class="text-[11px] text-ink-400 text-center">Demo data only • Calendar mock available • Not connected to real systems</div></div>`;
+  document.getElementById('drawerContent').innerHTML = `<div class="space-y-5"><div class="flex items-start justify-between gap-3"><div class="flex gap-3"><div class="w-11 h-11 rounded-full bg-ink-900 text-white grid place-items-center font-semibold shrink-0">${lead.name.split(' ').map(s=>s[0]).join('').slice(0,2)}</div><div class="min-w-0"><div class="font-semibold flex items-center gap-2 flex-wrap">${lead.name} ${lead.source.includes('WhatsApp')?'<span class="text-[10px] px-2 py-0.5 rounded-full bg-[#DCF8C6] text-[#075E54] border border-[#25D366]/30">WA</span>':''}</div><div class="text-[12px] text-ink-400">${lead.id} • ${fmtTime(lead.timestamp)}</div><div class="mt-1.5 inline-flex text-[11px] px-2.5 py-1 rounded-full border ${statusMeta[lead.status].color}">${statusMeta[lead.status].label}</div></div></div><button onclick="openAssign('${lead.id}')" class="h-10 w-10 lg:h-8 lg:w-auto lg:px-3 rounded-full bg-ink-900 text-white text-[11px] font-medium grid place-items-center shrink-0 active:bg-black"><span class="lg:hidden">↗</span><span class="hidden lg:inline">Assign</span></button></div><div class="grid grid-cols-2 gap-3 text-[12px]"><div class="p-3 rounded-xl bg-slate-50 border border-slate-200"><div class="text-[11px] tracking-widest uppercase text-ink-400 font-semibold">Phone</div><div class="font-medium mt-1">${lead.phone}</div></div><div class="p-3 rounded-xl bg-slate-50 border border-slate-200"><div class="text-[11px] tracking-widest uppercase text-ink-400 font-semibold">Email</div><div class="font-medium mt-1 truncate">${lead.email||'—'}</div></div><div class="p-3 rounded-xl bg-slate-50 border border-slate-200"><div class="text-[11px] tracking-widest uppercase text-ink-400 font-semibold">Enquiry</div><div class="font-medium mt-1 line-clamp-2">${lead.enquiryType}</div></div><div class="p-3 rounded-xl bg-slate-50 border border-slate-200"><div class="text-[11px] tracking-widest uppercase text-ink-400 font-semibold">Preferred 📅</div><div class="font-medium mt-1"><button onclick="openCalendar('${lead.id}')" class="underline decoration-dashed text-[12px]">📅 ${lead.preferredDate}</button></div></div></div><div><div class="text-[11px] font-semibold tracking-widest uppercase text-ink-400">Status</div><select onchange="changeStatus('${lead.id}', this.value); openLead('${lead.id}'); render();" class="mt-2 w-full h-12 px-3 rounded-xl border border-slate-200 bg-white text-[14px]">${Object.entries(statusMeta).map(([k,v])=>`<option value="${k}" ${lead.status===k?'selected':''}>${v.label}</option>`).join('')}</select></div><div><div class="text-[11px] font-semibold tracking-widest uppercase text-ink-400">Conversation</div><div class="mt-3 space-y-3 max-h-[280px] overflow-auto p-3 rounded-xl ${lead.source.includes('WhatsApp')?'whatsapp-bg':'bg-[#fcfcfd]'} border border-slate-100">${lead.conversation.map(m=>{ const isP=m.from==='patient'; return `<div class="flex ${isP?'justify-start':'justify-end'}"><div class="max-w-[85%] rounded-[14px] px-3 py-2.5 text-[12px] leading-5 ${isP?'bg-white border border-slate-200':'bg-ink-900 text-white'}">${m.text}</div></div>`; }).join('')}</div></div><div class="flex flex-col sm:flex-row gap-2 safe-bottom"><button onclick="closeDrawerFunc(); navigate('conversations'); selectConversationMobile('${lead.id}')" class="flex-1 h-12 lg:h-10 rounded-full border border-slate-200 text-[13px] font-medium active:bg-slate-50">Open in Chats</button><button onclick="closeDrawerFunc(); openAssign('${lead.id}')" class="flex-1 h-12 lg:h-10 rounded-full bg-ink-900 text-white text-[13px] font-medium active:bg-black">Human Handoff</button></div></div>`;
   document.getElementById('drawer').classList.remove('hidden');
 }
 function closeDrawerFunc(){ document.getElementById('drawer').classList.add('hidden'); }
-function selectConversation(id){ selectedLeadId=id; render(); }
+function selectConversation(id){ selectedLeadId=id; if(window.innerWidth < 1024){ window._convMobileView='chat'; } render(); }
+function selectConversationMobile(id){ selectedLeadId=id; window._convMobileView='chat'; render(); }
+function showConvList(){ window._convMobileView='list'; render(); }
 function changeStatus(id, newStatus){ const l=LEADS.find(x=>x.id===id); if(!l) return; l.status=newStatus; if(newStatus==='lost') l.followStage=2; rebuildFollowups(); render(); }
 function openAssign(id){ assignTargetId=id; document.getElementById('assignStaff').innerHTML=STAFF.map(s=>`<option value="${s.id}">${s.name} — ${s.role}</option>`).join(''); document.getElementById('assignNote').value=''; document.getElementById('assignModal').classList.remove('hidden'); }
 function closeAssign(){ document.getElementById('assignModal').classList.add('hidden'); assignTargetId=null; }
 function confirmAssignFunc(){
   if(!assignTargetId) return; const staffId=document.getElementById('assignStaff').value, note=document.getElementById('assignNote').value.trim(), lead=LEADS.find(l=>l.id===assignTargetId);
-  if(lead){ lead.assignedTo=staffId; lead.status= ['new','followup'].includes(lead.status)?'contacted':lead.status; if(note) lead.notes.push({by:STAFF.find(s=>s.id===staffId)?.name||'Staff', text:note, at:new Date().toISOString()}); FOLLOWUPS.filter(f=>f.leadId===lead.id && f.status==='scheduled').forEach(f=>f.status='stopped'); lead.conversation.push({from:'ai', text:`[Human Handoff - DEMO] Assigned to ${STAFF.find(s=>s.id===staffId)?.name}. Automated follow-ups paused. Note: ${note||'No note'}`, at:new Date().toISOString()}); rebuildFollowups(); FOLLOWUPS.filter(f=>f.leadId===lead.id && f.stage>0).forEach(f=>{ if(f.status==='scheduled') f.status='stopped'; }); NOTIFICATIONS.unshift({id:'n'+Date.now(), type:'assign', title:`Assigned: ${lead.name} → ${STAFF.find(s=>s.id===staffId)?.name.split(' ')[0]}`, desc:`Human handoff • ${note||'No note'} • Automation stopped`, at:new Date().toISOString(), read:false}); }
-  closeAssign(); render(); if(lead) openLead(lead.id); showToast(`Assigned to ${STAFF.find(s=>s.id===staffId)?.name} • Automation paused`);
+  if(lead){ lead.assignedTo=staffId; lead.status= ['new','followup'].includes(lead.status)?'contacted':lead.status; if(note) lead.notes.push({by:STAFF.find(s=>s.id===staffId)?.name||'Staff', text:note, at:new Date().toISOString()}); FOLLOWUPS.filter(f=>f.leadId===lead.id && f.status==='scheduled').forEach(f=>f.status='stopped'); lead.conversation.push({from:'ai', text:`[Handoff] Assigned to ${STAFF.find(s=>s.id===staffId)?.name}. Automation paused. Note: ${note||'No note'}`, at:new Date().toISOString()}); rebuildFollowups(); FOLLOWUPS.filter(f=>f.leadId===lead.id && f.stage>0).forEach(f=>{ if(f.status==='scheduled') f.status='stopped'; }); NOTIFICATIONS.unshift({id:'n'+Date.now(), type:'assign', title:`Assigned: ${lead.name} → ${STAFF.find(s=>s.id===staffId)?.name.split(' ')[0]}`, desc:`Handoff • ${note||'No note'}`, at:new Date().toISOString(), read:false}); }
+  closeAssign(); render(); if(lead) openLead(lead.id); showToast(`Assigned to ${STAFF.find(s=>s.id===staffId)?.name}`);
 }
 function markFollowSent(id){ const f=FOLLOWUPS.find(x=>x.id===id); if(!f) return; f.status='sent'; const lead=LEADS.find(l=>l.id===f.leadId); if(lead && f.stage>=lead.followStage) lead.followStage=f.stage+1; render(); }
-function simulateSendAll(){ FOLLOWUPS.filter(f=>f.status==='scheduled').slice(0,5).forEach(f=>{ f.status='sent'; const l=LEADS.find(x=>x.id===f.leadId); if(l) l.followStage=Math.max(l.followStage, f.stage+1); }); render(); showToast('Demo: 5 follow-ups marked sent'); }
-function openCalendar(id){ document.getElementById('calendarModal').classList.remove('hidden'); if(id){ const lead=LEADS.find(l=>l.id===id); if(lead) showToast(`Calendar for ${lead.name} • ${lead.preferredDate} • Demo`);} }
+function simulateSendAll(){ FOLLOWUPS.filter(f=>f.status==='scheduled').slice(0,5).forEach(f=>{ f.status='sent'; const l=LEADS.find(x=>x.id===f.leadId); if(l) l.followStage=Math.max(l.followStage, f.stage+1); }); render(); showToast('5 follow-ups marked sent'); }
+function openCalendar(id){ document.getElementById('calendarModal').classList.remove('hidden'); if(id){ const lead=LEADS.find(l=>l.id===id); if(lead) showToast(`Calendar: ${lead.name} • ${lead.preferredDate}`);} }
 function closeCalendarFunc(){ document.getElementById('calendarModal').classList.add('hidden'); }
-
-/* Notifications */
 function toggleNotifs(){ document.getElementById('notifDropdown').classList.toggle('hidden'); }
 function markNotifRead(id){ const n=NOTIFICATIONS.find(x=>x.id===id); if(n) n.read=true; render(); }
 function clearNotifs(){ NOTIFICATIONS.forEach(n=>n.read=true); render(); }
 function pushNotif(type,title,desc){ NOTIFICATIONS.unshift({id:'n'+Date.now()+Math.random(), type, title, desc, at:new Date().toISOString(), read:false}); render(); if(NOTIFICATIONS.length>20) NOTIFICATIONS.pop(); }
 
-/* Chat v2 */
-function openChat(withWelcome=false){ document.getElementById('chatPanel').classList.remove('hidden'); document.getElementById('chatLauncher').classList.add('hidden'); if(withWelcome && chatHistory.length===0) startChat(); }
-function closeChatFunc(){ document.getElementById('chatPanel').classList.add('hidden'); document.getElementById('chatLauncher').classList.remove('hidden'); }
-function startChat(){
-  chatState={step:'greet', data:{}}; chatHistory=[]; renderChat();
-  setTimeout(()=>{ pushBot(i18n[chatLang].greet, true); setQuickReplies(chatLang==='en'? ['Hello, I would like to know about consultation for laparoscopic surgery.', 'Need second opinion for gallbladder stones', 'What are consultation timings?'] : ['नमस्ते, लैप्रोस्कोपिक सर्जरी के लिए consultation चाहिए', 'पित्त की पथरी के लिए second opinion', 'Consultation का समय क्या है?']); }, 600);
-}
-function pushBot(text, isInitial=false){ chatHistory.push({from:'ai', text, at:new Date().toISOString()}); renderChat(); }
+function openChat(withWelcome=false){ document.getElementById('chatPanel').classList.remove('hidden'); document.getElementById('chatPanel').classList.add('flex'); document.getElementById('chatLauncher').classList.add('hidden'); if(withWelcome && chatHistory.length===0) startChat(); }
+function closeChatFunc(){ document.getElementById('chatPanel').classList.add('hidden'); document.getElementById('chatPanel').classList.remove('flex'); document.getElementById('chatLauncher').classList.remove('hidden'); }
+function startChat(){ chatState={step:'greet', data:{}}; chatHistory=[]; renderChat(); setTimeout(()=>{ pushBot(i18n[chatLang].greet, true); setQuickReplies(chatLang==='en'? ['Hello, I would like to know about consultation for laparoscopic surgery.', 'Need second opinion for gallbladder stones'] : ['नमस्ते, लैप्रोस्कोपिक सर्जरी के लिए consultation चाहिए', 'पित्त की पथरी के लिए second opinion']); }, 500); }
+function pushBot(text){ chatHistory.push({from:'ai', text, at:new Date().toISOString()}); renderChat(); }
 function pushUser(text){ chatHistory.push({from:'patient', text, at:new Date().toISOString()}); renderChat(); }
-function renderChat(){ const box=document.getElementById('chatMessages'); box.innerHTML=chatHistory.map(m=>`<div class="flex ${m.from==='patient'?'justify-end':'justify-start'}"><div class="max-w-[82%] rounded-[16px] px-3.5 py-2.5 text-[13px] leading-[1.5] shadow-sm ${m.from==='patient'?'bg-ink-900 text-white rounded-br-[4px]':'bg-white border border-slate-200 rounded-bl-[4px]'}">${escapeHtml(m.text)}</div></div>`).join(''); box.scrollTop=box.scrollHeight; }
+function renderChat(){ const box=document.getElementById('chatMessages'); box.innerHTML=chatHistory.map(m=>`<div class="flex ${m.from==='patient'?'justify-end':'justify-start'}"><div class="max-w-[85%] rounded-[16px] px-3.5 py-3 text-[14px] lg:text-[13px] leading-[1.5] ${m.from==='patient'?'bg-ink-900 text-white rounded-br-[4px]':'bg-white border border-slate-200 rounded-bl-[4px] shadow-sm'}">${escapeHtml(m.text)}</div></div>`).join(''); box.scrollTop=box.scrollHeight; }
 function escapeHtml(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function setQuickReplies(arr){ const c=document.getElementById('quickReplies'); c.innerHTML=''; arr.forEach(t=>{ const btn=document.createElement('button'); btn.className='text-[11px] px-2.5 py-1 rounded-full bg-slate-50 border border-slate-200 hover:border-ink-900 hover:bg-ink-900 hover:text-white transition'; btn.textContent=t; btn.onclick=()=>{ document.getElementById('chatInput').value=t; sendChat(); }; c.appendChild(btn); }); }
+function setQuickReplies(arr){ const c=document.getElementById('quickReplies'); c.innerHTML=''; arr.forEach(t=>{ const btn=document.createElement('button'); btn.className='text-[12px] lg:text-[11px] px-3 py-2 rounded-full bg-slate-50 border border-slate-200 active:bg-ink-900 active:text-white transition'; btn.textContent=t; btn.onclick=()=>{ document.getElementById('chatInput').value=t; sendChat(); }; c.appendChild(btn); }); }
 function detectEmergency(text){ const emerg=['chest pain','bleeding heavily','unconscious','emergency','can\'t breathe','severe pain','accident','heart attack','stroke','छाती में दर्द','बेहोश','इमरजेंसी']; return emerg.some(k=> text.toLowerCase().includes(k)); }
 function extractPhone(text){ const m=text.match(/(\+91[\s-]?)?[6-9]\d{4}[\s-]?\d{5}/); return m? m[0]: null; }
-function extractName(text){ const words=text.trim().split(' '); if(words.length>=2 && words.length<=4 && !/\d/.test(text) && text.length<40) return text.split(',')[0].trim(); const mm=text.match(/my name is ([a-z ]+)/i); if(mm) return mm[1].trim().split(' ').map(w=> w.charAt(0).toUpperCase()+w.slice(1)).join(' '); const mm2=text.match(/i am ([a-z ]+)/i); if(mm2) return mm2[1].trim().split(' ').map(w=> w.charAt(0).toUpperCase()+w.slice(1)).join(' '); const hi=text.match(/मेरा नाम (.+) है/); if(hi) return hi[1].trim(); return null; }
+function extractName(text){ const words=text.trim().split(' '); if(words.length>=2 && words.length<=4 && !/\d/.test(text) && text.length<40) return text.split(',')[0].trim(); const mm=text.match(/my name is ([a-z ]+)/i); if(mm) return mm[1].trim().split(' ').map(w=> w.charAt(0).toUpperCase()+w.slice(1)).join(' '); const mm2=text.match(/i am ([a-z ]+)/i); if(mm2) return mm2[1].trim().split(' ').map(w=> w.charAt(0).toUpperCase()+w.slice(1)).join(' '); return null; }
 function sendChat(){
   const input=document.getElementById('chatInput'); const text=input.value.trim(); if(!text) return; input.value=''; setQuickReplies([]); const t=i18n[chatLang];
-  if(detectEmergency(text)){ pushUser(text); setTimeout(()=>{ pushBot(t.emergency); }, 700); return; }
-  pushUser(text);
-  document.getElementById('chatTyping').classList.remove('hidden');
-  setTimeout(()=>{ document.getElementById('chatTyping').classList.add('hidden'); handleChatFlow(text); }, 800);
+  if(detectEmergency(text)){ pushUser(text); setTimeout(()=>{ pushBot(t.emergency); }, 600); return; }
+  pushUser(text); document.getElementById('chatTyping').classList.remove('hidden'); setTimeout(()=>{ document.getElementById('chatTyping').classList.add('hidden'); handleChatFlow(text); }, 700);
 }
 function handleChatFlow(text){
   const t=i18n[chatLang];
-  if(chatState.step==='greet' || chatState.step==='idle'){
-    chatState.data.enquiryType = text; chatState.step='await_name';
-    pushBot(t.askName(text)); setQuickReplies(chatLang==='en'? ['My name is Rahul Kulkarni', 'Priya Sharma'] : ['मेरा नाम राहुल कुलकर्णी है', 'प्रिया शर्मा']);
-  } else if(chatState.step==='await_name'){
-    const name=extractName(text) || text.split(',')[0].slice(0,30); chatState.data.name=name; chatState.step='await_phone';
-    pushBot(t.askPhone(name)); setQuickReplies(['9876543210', '+91 98765 43210']);
-  } else if(chatState.step==='await_phone'){
-    const phone=extractPhone(text) || text; chatState.data.phone=phone; chatState.step='await_date';
-    pushBot(t.askDate); setQuickReplies(chatLang==='en'? ['Tomorrow, 10:30 AM', 'This Saturday, 11 AM', 'Monday after 4 PM'] : ['कल सुबह 10:30 बजे', 'इस शनिवार 11 बजे', 'सोमवार शाम 4 बजे']);
-  } else if(chatState.step==='await_date'){
-    chatState.data.preferredDate=text; chatState.step='await_email_optional';
-    pushBot(t.askEmail(text)); setQuickReplies(['skip', 'rahul.demo@example.com']);
-  } else if(chatState.step==='await_email_optional'){
-    if(text.toLowerCase()!=='skip' && text.includes('@')) chatState.data.email=text; else chatState.data.email=''; chatState.step='completed';
-    pushBot(t.thanks(chatState.data.name||'Patient', chatState.data.enquiryType||'consultation')); createLeadFromChat(); setQuickReplies(chatLang==='en'? ['Thank you', 'Can I reschedule later?'] : ['धन्यवाद', 'क्या reschedule कर सकते हैं?']);
-  } else {
-    pushBot(chatLang==='en'? `Thank you for your message. Our team has your details and will assist you.` : `आपके संदेश के लिए धन्यवाद। हमारी टीम आपसे जल्द संपर्क करेगी।`);
-  }
+  if(chatState.step==='greet' || chatState.step==='idle'){ chatState.data.enquiryType = text; chatState.step='await_name'; pushBot(t.askName(text)); setQuickReplies(chatLang==='en'? ['My name is Rahul Kulkarni', 'Priya Sharma'] : ['मेरा नाम राहुल कुलकर्णी है', 'प्रिया शर्मा']); }
+  else if(chatState.step==='await_name'){ const name=extractName(text) || text.split(',')[0].slice(0,30); chatState.data.name=name; chatState.step='await_phone'; pushBot(t.askPhone(name)); setQuickReplies(['9876543210', '+91 98765 43210']); }
+  else if(chatState.step==='await_phone'){ const phone=extractPhone(text) || text; chatState.data.phone=phone; chatState.step='await_date'; pushBot(t.askDate); setQuickReplies(chatLang==='en'? ['Tomorrow, 10:30 AM', 'This Saturday'] : ['कल सुबह 10:30 बजे', 'इस शनिवार']); }
+  else if(chatState.step==='await_date'){ chatState.data.preferredDate=text; chatState.step='await_email_optional'; pushBot(t.askEmail(text)); setQuickReplies(['skip', 'rahul.demo@example.com']); }
+  else if(chatState.step==='await_email_optional'){ if(text.toLowerCase()!=='skip' && text.includes('@')) chatState.data.email=text; else chatState.data.email=''; chatState.step='completed'; pushBot(t.thanks(chatState.data.name||'Patient', chatState.data.enquiryType||'consultation')); createLeadFromChat(); setQuickReplies(chatLang==='en'? ['Thank you'] : ['धन्यवाद']); }
+  else { pushBot(chatLang==='en'? `Thank you, our team will assist you.` : `धन्यवाद, हमारी टीम संपर्क करेगी।`); }
 }
 function createLeadFromChat(){
   const id='L-'+(1000+LEADS.length+1);
   const newLead={id, name:chatState.data.name||'Demo Patient', phone:chatState.data.phone||'+91 90000 00000', email:chatState.data.email||'', enquiryType:chatState.data.enquiryType||'General Consultation', preferredDate:chatState.data.preferredDate||'Flexible', status:'new', source: Math.random()>0.5?'Website Chat':'WhatsApp (Demo)', timestamp:new Date().toISOString(), assignedTo:null, followStage:0, notes:[], demo:true, conversation: chatHistory.map(m=>({from:m.from, text:m.text, at:m.at}))};
-  LEADS.unshift(newLead); rebuildFollowups(); const f0=FOLLOWUPS.find(f=>f.leadId===id && f.stage===0); if(f0) f0.status='sent'; render(); showToast(`New lead captured: ${newLead.name} • ${newLead.enquiryType}`); pushNotif('new', `New enquiry: ${newLead.name}`, `${newLead.enquiryType} • Just now • ${newLead.source} • ${chatLang==='hi'?'हिंदी में':'EN'}`); // bell pulse
-  document.getElementById('notifBtn').classList.add('animate-bounce'); setTimeout(()=>document.getElementById('notifBtn').classList.remove('animate-bounce'), 1200);
+  LEADS.unshift(newLead); rebuildFollowups(); const f0=FOLLOWUPS.find(f=>f.leadId===id && f.stage===0); if(f0) f0.status='sent'; render(); showToast(`New lead: ${newLead.name}`); pushNotif('new', `New enquiry: ${newLead.name}`, `${newLead.enquiryType} • Just now • ${newLead.source}`); document.getElementById('notifBtn').classList.add('animate-bounce'); setTimeout(()=>document.getElementById('notifBtn').classList.remove('animate-bounce'), 1200);
 }
-function showToast(msg){ let t=document.getElementById('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.className='fixed bottom-6 left-1/2 -translate-x-1/2 bg-ink-900 text-white text-[12px] px-5 py-2.5 rounded-full shadow-xl z-[80] flex items-center gap-2'; document.body.appendChild(t); } t.innerHTML=`<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> ${msg}`; t.style.opacity='1'; t.style.transform='translate(-50%,0)'; setTimeout(()=>{ t.style.opacity='0'; }, 4000); }
+function showToast(msg){ let t=document.getElementById('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.className='fixed bottom-[88px] lg:bottom-6 left-1/2 -translate-x-1/2 bg-ink-900 text-white text-[13px] lg:text-[12px] px-5 py-3 rounded-full shadow-xl z-[80] flex items-center gap-2 max-w-[90vw]'; document.body.appendChild(t); } t.innerHTML=`<span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0"></span><span class="truncate">${msg}</span>`; t.style.opacity='1'; setTimeout(()=>{ t.style.opacity='0'; }, 4000); }
+function triggerDemo(){ openChat(true); document.getElementById('chatInput').value='Hello, I would like to know about consultation for laparoscopic surgery.'; showToast('Demo: Tap Send → watch dashboard + bell live'); }
+function sendStaffReply(leadId){ const input=document.getElementById('staffReply'); const text=input.value.trim(); if(!text) return; const lead=LEADS.find(l=>l.id===leadId); if(!lead) return; lead.conversation.push({from:'ai', text:`[Staff: ${STAFF[1].name}] ${text}`, at:new Date().toISOString()}); lead.assignedTo='s2'; lead.status='contacted'; FOLLOWUPS.filter(f=>f.leadId===leadId && f.status==='scheduled').forEach(f=>f.status='stopped'); input.value=''; render(); pushNotif('assign', `Reply: ${lead.name}`, text.slice(0,40)); }
 
-/* Demo runner */
-function triggerDemo(){
-  openChat(true); document.getElementById('chatInput').value='Hello, I would like to know about consultation for laparoscopic surgery.'; showToast('Demo: Click Send to start → watch dashboard + bell notification live'); const btn=document.getElementById('runDemoBtn'); const hero=document.getElementById('heroDemoBtn'); [btn,hero].forEach(b=>{ if(!b) return; b.textContent='Demo Running…'; setTimeout(()=>b.textContent=b.id==='runDemoBtn'?'▶ Run Live Demo':'▶ Run Live Demo', 4000); });
-}
-
-/* Staff reply */
-function sendStaffReply(leadId){ const input=document.getElementById('staffReply'); const text=input.value.trim(); if(!text) return; const lead=LEADS.find(l=>l.id===leadId); if(!lead) return; lead.conversation.push({from:'ai', text:`[Staff: ${STAFF[1].name}] ${text}`, at:new Date().toISOString()}); lead.assignedTo='s2'; lead.status='contacted'; FOLLOWUPS.filter(f=>f.leadId===leadId && f.status==='scheduled').forEach(f=>f.status='stopped'); input.value=''; render(); pushNotif('assign', `Reply sent: ${lead.name}`, `Staff replied • ${text.slice(0,40)}`); }
-
-/* Tour v2.1 - Fixed stuck at end */
+/* Tour v2.2 Mobile Optimized */
 const TOUR_STEPS = [
-  {target:'tourTarget-metrics', title:'Live Metrics • Demo Data', desc:'Every enquiry is tracked. 100% AI response rate <2s, even in Hindi. This is all synthetic demo data, not connected to real systems.', pos:'bottom'},
-  {target:'chatLauncher', title:'Patient Chat • EN/हि + WhatsApp Style', desc:'This is the patient-facing widget (bottom-right). Try Hindi toggle (हि) top-right. Type any enquiry and watch AI collect name, phone, date — no medical diagnosis.', pos:'left'},
-  {target:'tourTarget-flow', title:'Automation Flow', desc:'Patient → AI instant reply → Lead auto-captured → Follow-ups at 0h, 24h, 3d → Human handoff stops automation. v2 adds bell notifications.', pos:'top'},
-  {target:'tourTarget-attention', title:'Attention Needed + Notifications', desc:'New + follow-up due leads here. Bell icon (top-right) notifies staff instantly when a new lead arrives. Click it to see live notifications.', pos:'left'},
-  {target:'tourTarget-recent', title:'Recent Enquiries + Channels', desc:'Website Chat + WhatsApp (Demo) + Phone. WhatsApp leads show green W badge and WhatsApp bubble styling in Conversations → WhatsApp filter. Click any row to see drawer with calendar 📅.', pos:'top'},
+  {target:'tourTarget-metrics', title:'Live Metrics • Demo Data', desc:'Every enquiry tracked. 100% AI response <2s, even in Hindi. Synthetic demo data.', pos:'bottom'},
+  {target:'chatLauncher', title:'Patient Chat • EN/हि + WhatsApp', desc:'Patient widget (bottom-right on desktop, bottom sheet on mobile). Try Hindi toggle हि. Collects name, phone, date.', pos:'left'},
+  {target:'tourTarget-flow', title:'Automation Flow', desc:'Patient → AI instant reply → Lead captured → Follow-ups 0h,24h,3d → Handoff stops automation.', pos:'top'},
+  {target:'tourTarget-attention', title:'Attention + Notifications', desc:'New + follow-up due here. Bell icon notifies staff instantly on new lead.', pos:'left'},
+  {target:'tourTarget-recent', title:'Recent Enquiries + Channels', desc:'Website + WhatsApp + Phone. WhatsApp green W badge. Tap any row → drawer with calendar 📅.', pos:'top'},
 ];
 function startTour(){
-  // Ensure we are on overview and chat is closed so launcher is visible
   currentNav='overview';
   document.getElementById('chatPanel').classList.add('hidden');
   document.getElementById('chatLauncher').classList.remove('hidden');
@@ -562,21 +496,20 @@ function startTour(){
   tourStep=0;
   document.getElementById('tourOverlay').classList.remove('hidden');
   document.body.style.overflow='hidden';
-  setTimeout(()=> renderTour(), 100);
+  setTimeout(()=> renderTour(), 150);
 }
 function endTour(){
   const overlay=document.getElementById('tourOverlay');
   const spotlight=document.getElementById('tourSpotlight');
   if(overlay) overlay.classList.add('hidden');
-  if(spotlight){ spotlight.style.width='0'; spotlight.style.height='0'; }
+  if(spotlight){ spotlight.style.width='0'; spotlight.style.height='0'; spotlight.style.opacity='0'; }
   document.body.style.overflow='';
-  showToast('Tour finished • Click Run Live Demo to see patient flow');
+  showToast('Tour finished • Tap Run Demo');
 }
 function renderTour(){
   const step=TOUR_STEPS[tourStep];
-  if(!step){ return endTour(); }
+  if(!step) return endTour();
   let targetEl=document.getElementById(step.target);
-  // Special handling for chatLauncher - ensure visible
   if(step.target==='chatLauncher'){
     document.getElementById('chatPanel').classList.add('hidden');
     document.getElementById('chatLauncher').classList.remove('hidden');
@@ -584,64 +517,76 @@ function renderTour(){
   }
   const spotlight=document.getElementById('tourSpotlight');
   const card=document.getElementById('tourCard');
-  if(!targetEl){
-    // If target missing, skip to next or end gracefully
-    console.warn('Tour target not found:', step.target);
-    spotlight.style.left='50%'; spotlight.style.top='50%'; spotlight.style.width='0'; spotlight.style.height='0'; spotlight.style.opacity='0';
-    card.style.left='50%'; card.style.top='50%'; card.style.transform='translate(-50%,-50%)';
+  if(window.innerWidth < 1024){
+    // Mobile: bottom sheet style, no spotlight
+    card.style.left='12px'; card.style.right='12px'; card.style.bottom='84px'; card.style.top='auto'; card.style.width='auto'; card.style.transform='none';
+    if(targetEl) targetEl.scrollIntoView({behavior:'smooth', block:'center'});
   } else {
-    spotlight.style.opacity='1';
-    targetEl.scrollIntoView({behavior:'smooth', block:'center'});
-    const rect=targetEl.getBoundingClientRect();
-    // Ensure rect is valid
-    if(rect.width===0 || rect.height===0){
-      spotlight.style.left='50%'; spotlight.style.top='50%'; spotlight.style.width='0'; spotlight.style.height='0';
+    if(!targetEl){
+      spotlight.style.opacity='0';
+      card.style.left='50%'; card.style.top='50%'; card.style.transform='translate(-50%,-50%)';
     } else {
-      spotlight.style.left=(rect.left-8)+'px';
-      spotlight.style.top=(rect.top-8+window.scrollY)+'px';
-      // Adjust for fixed overlay (no scrollY needed as overlay is fixed, rect is viewport relative)
-      spotlight.style.top=(rect.top-8)+'px';
-      spotlight.style.width=(rect.width+16)+'px';
-      spotlight.style.height=(rect.height+16)+'px';
+      spotlight.style.opacity='1';
+      targetEl.scrollIntoView({behavior:'smooth', block:'center'});
+      const rect=targetEl.getBoundingClientRect();
+      if(rect.width===0 || rect.height===0){
+        spotlight.style.width='0'; spotlight.style.height='0';
+      } else {
+        spotlight.style.left=(rect.left-8)+'px'; spotlight.style.top=(rect.top-8)+'px'; spotlight.style.width=(rect.width+16)+'px'; spotlight.style.height=(rect.height+16)+'px';
+      }
+      let cardLeft=rect.left, cardTop=rect.bottom+16;
+      if(step.pos==='left'){ cardLeft=rect.left - 420; cardTop=rect.top; }
+      if(cardLeft<16) cardLeft=16;
+      if(cardLeft+400>window.innerWidth) cardLeft=window.innerWidth-416;
+      if(cardTop+240>window.innerHeight) cardTop=rect.top - 260;
+      if(cardTop<16) cardTop=16;
+      card.style.left=cardLeft+'px'; card.style.top=cardTop+'px'; card.style.right='auto'; card.style.bottom='auto'; card.style.transform='none';
     }
-    let cardLeft=rect.left, cardTop=rect.bottom+16;
-    if(step.pos==='left'){ cardLeft=rect.left - 420; cardTop=rect.top; }
-    if(cardLeft<16) cardLeft=16;
-    if(cardLeft+400>window.innerWidth) cardLeft=window.innerWidth-416;
-    if(cardTop+220>window.innerHeight) cardTop=rect.top - 240;
-    if(cardTop<16) cardTop=16;
-    card.style.left=cardLeft+'px';
-    card.style.top=cardTop+'px';
-    card.style.transform='none';
   }
   document.getElementById('tourStepNum').textContent=tourStep+1;
   document.getElementById('tourProgress').textContent=(tourStep+1)+' / '+TOUR_STEPS.length;
   document.getElementById('tourTitle').textContent=step.title;
   document.getElementById('tourDesc').textContent=step.desc;
-  document.getElementById('tourDots').innerHTML=TOUR_STEPS.map((_,i)=>`<span class="w-1.5 h-1.5 rounded-full transition-all ${i===tourStep?'bg-ink-900 w-5':'bg-slate-300'}"></span>`).join('');
+  document.getElementById('tourDots').innerHTML=TOUR_STEPS.map((_,i)=>`<span class="w-2 h-2 rounded-full transition-all ${i===tourStep?'bg-ink-900 w-6':'bg-slate-300'}"></span>`).join('');
   document.getElementById('tourPrev').style.visibility=tourStep===0?'hidden':'visible';
-  document.getElementById('tourNext').textContent=tourStep===TOUR_STEPS.length-1?'Finish ✓ Close':'Next →';
+  document.getElementById('tourNext').textContent=tourStep===TOUR_STEPS.length-1?'Finish ✓':'Next →';
 }
-function nextTour(){
-  if(tourStep < TOUR_STEPS.length-1){
-    tourStep++;
-    renderTour();
-  } else {
-    endTour();
-  }
-}
+function nextTour(){ if(tourStep < TOUR_STEPS.length-1){ tourStep++; renderTour(); } else { endTour(); } }
 function prevTour(){ if(tourStep>0){ tourStep--; renderTour(); } }
 
-/* Export */
-function exportLeads(){ const csv=['ID,Name,Phone,Email,Enquiry,Preferred,Status,Source,Timestamp,Assigned'].concat(LEADS.map(l=>`${l.id},"${l.name}","${l.phone}","${l.email}","${l.enquiryType}","${l.preferredDate}",${l.status},${l.source},${l.timestamp},${l.assignedTo||''}`)).join('\n'); const blob=new Blob([csv],{type:'text/csv'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='vyravo-demo-leads-v2.csv'; a.click(); URL.revokeObjectURL(url); }
-function resetDemo(){ if(!confirm('Reset demo data to original?')) return; localStorage.clear(); location.reload(); }
-function renderLeadsFiltered(){ const q=document.getElementById('leadSearch').value.toLowerCase(); const tbody=document.getElementById('leadsTbody'); if(!tbody) return; const filtered=LEADS.filter(l=> (l.name+l.phone+l.enquiryType).toLowerCase().includes(q)); tbody.innerHTML=filtered.map(l=>`<tr class="border-b border-slate-50 hover:bg-slate-50/70"><td class="px-6 py-3"><div class="font-medium flex items-center gap-1">${l.name} ${l.source.includes('WhatsApp')?'<span class="w-4 h-4 rounded-full bg-[#25D366] text-white grid place-items-center text-[8px]">W</span>':''}</div><div class="text-[11px] text-ink-400">${l.id} • ${fmtTime(l.timestamp)}</div></td><td class="px-6 py-3"><div class="text-[12px]">${l.phone}</div><div class="text-[11px] text-ink-400">${l.email||'No email'}</div></td><td class="px-6 py-3 text-[12px] max-w-[180px] truncate">${l.enquiryType}</td><td class="px-6 py-3 text-[12px]"><button onclick="openCalendar('${l.id}')" class="underline decoration-dashed">${l.preferredDate}</button></td><td class="px-6 py-3"><select onchange="changeStatus('${l.id}', this.value)" class="h-7 px-2 rounded-full border text-[11px] font-medium bg-white">${Object.entries(statusMeta).map(([k,v])=>`<option value="${k}" ${l.status===k?'selected':''}>${v.label}</option>`).join('')}</select></td><td class="px-6 py-3 text-[12px]">${l.assignedTo? STAFF.find(s=>s.id===l.assignedTo)?.name : '<span class="text-ink-400">Unassigned</span>'}</td><td class="px-6 py-3 text-[11px]">${FOLLOWUPS.filter(f=>f.leadId===l.id && f.status==='sent').length} sent / ${FOLLOWUPS.filter(f=>f.leadId===l.id).length}</td><td class="px-6 py-3 flex gap-1.5"><button onclick="openLead('${l.id}')" class="h-7 px-2.5 rounded-full bg-ink-900 text-white text-[11px]">Open</button><button onclick="openAssign('${l.id}')" class="h-7 w-7 grid place-items-center rounded-full border border-slate-200 text-[11px]">↗</button></td></tr>`).join(''); }
+function exportLeads(){ const csv=['ID,Name,Phone,Email,Enquiry,Preferred,Status,Source,Timestamp'].concat(LEADS.map(l=>`${l.id},"${l.name}","${l.phone}","${l.email}","${l.enquiryType}","${l.preferredDate}",${l.status},${l.source},${l.timestamp}`)).join('\n'); const blob=new Blob([csv],{type:'text/csv'}); const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='vyravo-demo-leads-v2.csv'; a.click(); URL.revokeObjectURL(url); }
+function resetDemo(){ if(!confirm('Reset demo data?')) return; localStorage.clear(); location.reload(); }
+function renderLeadsFiltered(){
+  const q=(document.getElementById('leadSearch')?.value||'').toLowerCase();
+  const tbody=document.getElementById('leadsTbody');
+  const mobileCards=document.getElementById('leadsMobileCards');
+  const filtered=LEADS.filter(l=> (l.name+l.phone+l.enquiryType).toLowerCase().includes(q));
+  if(tbody){
+    tbody.innerHTML=filtered.map(l=>`<tr class="border-b border-slate-50 hover:bg-slate-50/70"><td class="px-6 py-3"><div class="font-medium">${l.name}</div><div class="text-[11px] text-ink-400">${l.id} • ${fmtTime(l.timestamp)}</div></td><td class="px-6 py-3 text-[12px]">${l.phone}</td><td class="px-6 py-3 text-[12px] max-w-[160px] truncate">${l.enquiryType}</td><td class="px-6 py-3 text-[12px]"><button onclick="openCalendar('${l.id}')" class="underline decoration-dashed">📅 ${l.preferredDate}</button></td><td class="px-6 py-3"><select onchange="changeStatus('${l.id}', this.value)" class="h-8 px-2 rounded-full border text-[11px] font-medium bg-white">${Object.entries(statusMeta).map(([k,v])=>`<option value="${k}" ${l.status===k?'selected':''}>${v.label}</option>`).join('')}</select></td><td class="px-6 py-3 flex gap-1.5"><button onclick="openLead('${l.id}')" class="h-8 px-3 rounded-full bg-ink-900 text-white text-[11px]">Open</button></td></tr>`).join('');
+  }
+  if(mobileCards){
+    mobileCards.innerHTML=filtered.map(l=>`<div class="bg-white rounded-[18px] border border-slate-200 shadow-card p-4"><div class="flex items-start justify-between gap-3"><div class="flex gap-3"><div class="w-10 h-10 rounded-full bg-ink-900 text-white grid place-items-center text-[12px] font-semibold">${l.name.split(' ').map(s=>s[0]).join('').slice(0,2)}</div><div><div class="font-semibold text-[14px] flex items-center gap-1">${l.name} ${l.source.includes('WhatsApp')?'<span class="w-5 h-5 rounded-full bg-[#25D366] text-white grid place-items-center text-[10px]">W</span>':''}</div><div class="text-[11px] text-ink-400">${l.phone} • ${fmtTime(l.timestamp)}</div><div class="text-[11px] text-ink-600 mt-1">${l.enquiryType}</div></div></div><span class="text-[10px] px-2.5 py-1 rounded-full border ${statusMeta[l.status].color}">${statusMeta[l.status].label.split(' ')[0]}</span></div><div class="mt-3 flex gap-2"><button onclick="openLead('${l.id}')" class="flex-1 h-11 rounded-full bg-ink-900 text-white text-[13px] font-medium">Open Details</button><button onclick="openCalendar('${l.id}')" class="h-11 w-11 grid place-items-center rounded-full border border-slate-200">📅</button></div></div>`).join('');
+  }
+}
 
-/* Events */
 document.addEventListener('DOMContentLoaded', ()=>{
   render(); navigate('overview');
+  const sidebar=document.getElementById('sidebar');
+  const backdrop=document.getElementById('sidebarBackdrop');
+  function toggleSidebar(){ const isHidden=sidebar.classList.contains('-translate-x-full'); if(isHidden){ sidebar.classList.remove('-translate-x-full'); backdrop.classList.remove('hidden'); } else { sidebar.classList.add('-translate-x-full'); backdrop.classList.add('hidden'); } }
+  function closeSidebar(){ sidebar.classList.add('-translate-x-full'); backdrop.classList.add('hidden'); }
+  document.getElementById('mobileMenu').addEventListener('click', toggleSidebar);
+  document.getElementById('closeSidebarMobile').addEventListener('click', closeSidebar);
+  backdrop.addEventListener('click', closeSidebar);
   document.querySelectorAll('[data-nav]').forEach(b=> b.addEventListener('click', ()=> navigate(b.dataset.nav)));
-  document.getElementById('mobileMenu').addEventListener('click', ()=> document.getElementById('sidebar').classList.toggle('-translate-x-full'));
+  document.querySelectorAll('[data-mnav]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const nav=btn.dataset.mnav;
+      document.querySelectorAll('.mnav-btn').forEach(b=>{ b.className='mnav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl text-ink-400 min-w-[56px]'; });
+      btn.className='mnav-btn flex flex-col items-center gap-1 px-3 py-2 rounded-xl bg-ink-900 text-white min-w-[56px]';
+      navigate(nav);
+    });
+  });
   document.getElementById('chatLauncher').addEventListener('click', ()=> openChat(true));
   document.getElementById('closeChat').addEventListener('click', closeChatFunc);
   document.getElementById('chatSend').addEventListener('click', sendChat);
@@ -655,20 +600,17 @@ document.addEventListener('DOMContentLoaded', ()=>{
   document.getElementById('notifBtn').addEventListener('click', (e)=>{ e.stopPropagation(); toggleNotifs(); });
   document.getElementById('calendarBg').addEventListener('click', closeCalendarFunc);
   document.getElementById('closeCalendar').addEventListener('click', closeCalendarFunc);
-  document.getElementById('langEn').addEventListener('click', ()=>{ chatLang='en'; document.getElementById('langEn').className='px-2.5 py-1 rounded-full text-[11px] font-medium bg-white text-ink-900'; document.getElementById('langHi').className='px-2.5 py-1 rounded-full text-[11px] font-medium text-white/70'; document.getElementById('disclaimerText').textContent=i18n.en.disclaimer; if(chatHistory.length===0) startChat(); else { pushBot(chatLang==='en'? 'Language switched to English.' : 'भाषा अंग्रेजी में बदली गई।'); } });
-  document.getElementById('langHi').addEventListener('click', ()=>{ chatLang='hi'; document.getElementById('langHi').className='px-2.5 py-1 rounded-full text-[11px] font-medium bg-white text-ink-900'; document.getElementById('langEn').className='px-2.5 py-1 rounded-full text-[11px] font-medium text-white/70'; document.getElementById('disclaimerText').textContent=i18n.hi.disclaimer; if(chatHistory.length===0) startChat(); else { pushBot('भाषा हिंदी में बदली गई। अब मैं हिंदी में मदद करूंगा।'); } });
+  document.getElementById('langEn').addEventListener('click', ()=>{ chatLang='en'; document.getElementById('langEn').className='px-2.5 py-1.5 rounded-full text-[11px] font-medium bg-white text-ink-900 min-w-[36px]'; document.getElementById('langHi').className='px-2.5 py-1.5 rounded-full text-[11px] font-medium text-white/70 min-w-[36px]'; document.getElementById('disclaimerText').textContent=i18n.en.disclaimer; if(chatHistory.length===0) startChat(); else pushBot('Language: English'); });
+  document.getElementById('langHi').addEventListener('click', ()=>{ chatLang='hi'; document.getElementById('langHi').className='px-2.5 py-1.5 rounded-full text-[11px] font-medium bg-white text-ink-900 min-w-[36px]'; document.getElementById('langEn').className='px-2.5 py-1.5 rounded-full text-[11px] font-medium text-white/70 min-w-[36px]'; document.getElementById('disclaimerText').textContent=i18n.hi.disclaimer; if(chatHistory.length===0) startChat(); else pushBot('भाषा हिंदी में बदली गई।'); });
   document.getElementById('tourNext').addEventListener('click', (e)=>{ e.stopPropagation(); nextTour(); });
   document.getElementById('tourPrev').addEventListener('click', (e)=>{ e.stopPropagation(); prevTour(); });
   document.getElementById('tourSkip').addEventListener('click', (e)=>{ e.stopPropagation(); endTour(); });
   document.getElementById('tourBg').addEventListener('click', endTour);
-  document.getElementById('tourOverlay').addEventListener('click', (e)=>{ if(e.target.id==='tourOverlay' || e.target.id==='tourBg') endTour(); });
-  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ const overlay=document.getElementById('tourOverlay'); if(overlay && !overlay.classList.contains('hidden')){ endTour(); } } });
-  document.addEventListener('click', (e)=>{ const dd=document.getElementById('notifDropdown'); if(!dd.contains(e.target) && e.target.id!=='notifBtn') dd.classList.add('hidden'); });
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape'){ const overlay=document.getElementById('tourOverlay'); if(overlay && !overlay.classList.contains('hidden')) endTour(); } });
+  document.addEventListener('click', (e)=>{ const dd=document.getElementById('notifDropdown'); if(dd && !dd.contains(e.target) && e.target.closest('#notifBtn')===null) dd.classList.add('hidden'); });
   setTimeout(()=>{ if(document.getElementById('chatPanel').classList.contains('hidden')) document.getElementById('chatLauncher').classList.add('animate-pulse'); }, 1500);
-  // auto prompt tour after 2s for sales
-  setTimeout(()=>{ if(!localStorage.getItem('tourSeen')){ /* startTour(); localStorage.setItem('tourSeen','1'); */ } }, 2500);
 });
-window.openLead=openLead; window.openAssign=openAssign; window.changeStatus=changeStatus; window.selectConversation=selectConversation; window.markFollowSent=markFollowSent; window.simulateSendAll=simulateSendAll; window.setEnqFilter=setEnqFilter; window.setConvFilter=setConvFilter; window.navigate=navigate; window.openChat=openChat; window.triggerDemo=triggerDemo; window.sendStaffReply=sendStaffReply; window.exportLeads=exportLeads; window.resetDemo=resetDemo; window.renderLeadsFiltered=renderLeadsFiltered; window.openCalendar=openCalendar; window.startTour=startTour; window.markNotifRead=markNotifRead; window.clearNotifs=clearNotifs;
+window.openLead=openLead; window.openAssign=openAssign; window.changeStatus=changeStatus; window.selectConversation=selectConversation; window.selectConversationMobile=selectConversationMobile; window.showConvList=showConvList; window.markFollowSent=markFollowSent; window.simulateSendAll=simulateSendAll; window.setEnqFilter=setEnqFilter; window.setConvFilter=setConvFilter; window.navigate=navigate; window.openChat=openChat; window.triggerDemo=triggerDemo; window.sendStaffReply=sendStaffReply; window.exportLeads=exportLeads; window.resetDemo=resetDemo; window.renderLeadsFiltered=renderLeadsFiltered; window.openCalendar=openCalendar; window.startTour=startTour; window.markNotifRead=markNotifRead; window.clearNotifs=clearNotifs;
 </script>
 </body>
 </html>
